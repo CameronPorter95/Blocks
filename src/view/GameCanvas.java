@@ -5,7 +5,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -15,6 +17,7 @@ import javax.imageio.ImageIO;
 public class GameCanvas extends Canvas {
 	
 	private int zoom = 200;
+	private int floorSize = 50; //Floor is a 50x50 grid.
 	private BufferedImage floorTile = null;
 
 	public GameCanvas(){
@@ -30,9 +33,9 @@ public class GameCanvas extends Canvas {
 		drawFloor(g);
 	}
 	
-	private void drawFloor(Graphics g){
-		for (int i = 10; i >= 0; i--){
-		    for (int j = 0; j < 10; j++){
+	private void drawFloor(Graphics2D g){
+		for (int i = floorSize; i >= 0; i--){
+		    for (int j = 0; j < floorSize; j++){
 		    	Point point = new Point(i, j);
 		    	Point p = twoDToIso(point);
 		    	g.drawImage(floorTile, p.x, p.y, getParent());
@@ -42,16 +45,26 @@ public class GameCanvas extends Canvas {
 	
 	private Point twoDToIso(Point point){
 		Point tempPt = new Point(0,0);
-		tempPt.x = (point.x * (int) zoom / 2) + (point.y * (int) zoom / 2);
-		tempPt.y = (point.y * (int) zoom / 4) - (point.x * (int) zoom / 4);
+		tempPt.x = (point.x * (int) zoom / 2) + (point.y * (int) zoom / 2 - 7070);
+		tempPt.y = (point.y * (int) zoom / 4) - (point.x * (int) zoom / 4) + 480;
 		return tempPt;
 	}
 	
 	private void readImage(){
 		try {
 			floorTile = ImageIO.read(getClass().getResource("assets/floor.png"));
+			floorTile =  getScaledImage(floorTile, 200, 100);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private BufferedImage getScaledImage(Image img, int w, int h){
+	    BufferedImage resized = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
+	    Graphics2D g2 = resized.createGraphics();
+	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g2.drawImage(img, 0, 0, w, h, null);
+	    g2.dispose();
+	    return resized;
 	}
 }
