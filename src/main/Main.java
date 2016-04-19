@@ -13,6 +13,7 @@ public class Main {
 		MouseListener mouseListener = new MouseListener(canvas);
 		//Register for mouse-wheel events on the canvas.
         canvas.addMouseWheelListener(mouseListener);
+        canvas.addMouseMotionListener(mouseListener);
         frame.setContentPane(canvas);
 	}
 
