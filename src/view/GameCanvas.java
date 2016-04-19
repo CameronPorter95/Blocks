@@ -17,13 +17,15 @@ import javax.swing.JPanel;
 public class GameCanvas extends JPanel {
 	
 	private int zoom = 200;
-	private int floorSize = 50; //Floor is a 50x50 grid.
+	private int floorSize = 69; //Floor is a 69x69 grid.
+	private int translate = 0;
 	private BufferedImage floorTile = null;
 	private BufferedImage scaledFloorTile;
 
 	public GameCanvas(){
 		this.setBackground(Color.BLACK);
 		setSize(new Dimension(1920, 1080));
+		this.translate = ((int) (this.getSize().getWidth() / 2)) - ((floorSize+1) * zoom/2);
 		readImage();
 		repaint();
 	}
@@ -36,7 +38,7 @@ public class GameCanvas extends JPanel {
 	}
 	
 	private void drawFloor(Graphics2D g){
-		for (int i = floorSize; i >= 0; i--){
+		for (int i = floorSize; i > 0; i--){
 		    for (int j = 0; j < floorSize; j++){
 		    	Point point = new Point(i, j);
 		    	Point p = twoDToIso(point);
@@ -48,31 +50,25 @@ public class GameCanvas extends JPanel {
 	public void zoomIn(){
 		if(zoom <= 280){
 			this.zoom = this.zoom + 20;
+			this.translate = this.translate - (20*((floorSize+1)/2));
 			scaledFloorTile =  getScaledImage(floorTile, zoom, zoom/2);
 			repaint();
-			System.out.println("Curent zoom is " + this.zoom);
-		}
-		else{
-			System.out.println("Cannot zoom in any further\nCurrent Zoom is " + this.zoom);
 		}
 	}
 	
 	public void zoomOut(){
-		if(zoom >= 40){
+		if(zoom >= 80){
 			this.zoom = this.zoom - 20;
+			this.translate = this.translate + (20*((floorSize+1)/2));
 			scaledFloorTile =  getScaledImage(floorTile, zoom, zoom/2);
 			repaint();
-			System.out.println("Curent zoom is " + this.zoom);
-		}
-		else{
-			System.out.println("Cannot zoom out any further\nCurrent Zoom is " + this.zoom);
 		}
 	}
 	
 	private Point twoDToIso(Point point){
 		Point tempPt = new Point(0,0);
-		tempPt.x = (point.x * (int) zoom / 2) + (point.y * (int) zoom / 2 - ((this.zoom/2)*25));
-		tempPt.y = (point.y * (int) zoom / 4) - (point.x * (int) zoom / 4) + 480;
+		tempPt.x = (point.x * (int) zoom / 2) + (point.y * (int) zoom / 2) + this.translate;
+		tempPt.y = (point.y * (int) zoom / 4) - (point.x * (int) zoom / 4) + (this.getHeight()/2);
 		return tempPt;
 	}
 	
