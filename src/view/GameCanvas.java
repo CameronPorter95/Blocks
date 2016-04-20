@@ -17,14 +17,14 @@ import javax.swing.JPanel;
 public class GameCanvas extends JPanel {
 	
 	private int zoom = 200;
-	private int floorSize = 5; //Floor is a 69x69 grid.
+	private int floorSize = 69; //Floor is a 69x69 grid.
 	private int translateX, translateY = 0;
 	private BufferedImage floorTile = null;
 	private BufferedImage scaledFloorTile;
 
-	public GameCanvas(){
+	public GameCanvas(Dimension screenSize){
 		this.setBackground(Color.BLACK);
-		setSize(new Dimension(1920, 1080));
+		setSize(screenSize);
 		this.translateX = ((int) (this.getSize().getWidth() / 2)) - ((floorSize+1) * zoom/2);
 		this.translateY = this.getHeight()/2;
 		readImage();
@@ -77,19 +77,22 @@ public class GameCanvas extends JPanel {
 	
 	/*----------------------------User Interaction Methods------------------------------*/
 	
-	public void zoomIn(){
+	public void zoomIn(int deltaTranslateX, int deltaTranslateY){
 		if(zoom <= 280){
 			this.zoom = this.zoom + 20;
-			this.translateX = this.translateX - (20*((floorSize+1)/2));
+			//this.translateX = this.translateX - (20*((floorSize+1)/2));
+			this.translateX = this.translateX - deltaTranslateX;
+			this.translateY = this.translateY - deltaTranslateY;
 			scaledFloorTile =  getScaledImage(floorTile, zoom, zoom/2);
 			repaint();
 		}
 	}
 	
-	public void zoomOut(){
+	public void zoomOut(int deltaTranslateX, int deltaTranslateY){
 		if(zoom >= 80){
 			this.zoom = this.zoom - 20;
-			this.translateX = this.translateX + (20*((floorSize+1)/2));
+			this.translateX = this.translateX + deltaTranslateX;
+			this.translateY = this.translateY + deltaTranslateY;
 			scaledFloorTile =  getScaledImage(floorTile, zoom, zoom/2);
 			repaint();
 		}
@@ -103,11 +106,11 @@ public class GameCanvas extends JPanel {
 	
 	/*----------------------------Getters & Setters------------------------------*/
 	
-	public double getTranslateX(){
+	public int getTranslateX(){
 		return this.translateX;
 	}
 	
-	public double getTranslateY(){
+	public int getTranslateY(){
 		return this.translateY;
 	}
 	
@@ -115,7 +118,7 @@ public class GameCanvas extends JPanel {
 		return floorSize;
 	}
 	
-	public double getZoom(){
+	public int getZoom(){
 		return this.zoom;
 	}
 }

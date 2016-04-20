@@ -1,5 +1,7 @@
 package main;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import view.Frame;
 import view.GameCanvas;
 import view.MouseListener;
@@ -7,11 +9,10 @@ import view.MouseListener;
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		Frame frame = new Frame();
-		GameCanvas canvas = new GameCanvas();
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Frame frame = new Frame(screenSize);
+		GameCanvas canvas = new GameCanvas(screenSize);
 		MouseListener mouseListener = new MouseListener(canvas);
-		//Register for mouse-wheel events on the canvas.
         canvas.addMouseWheelListener(mouseListener);
         canvas.addMouseMotionListener(mouseListener);
         frame.setContentPane(canvas);

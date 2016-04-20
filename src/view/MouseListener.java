@@ -15,37 +15,19 @@ public class MouseListener implements MouseWheelListener, MouseMotionListener{
 		this.canvas = canvas;
 	}
 	
-	//mPosX = (point.x * (int) zoom / 2) + (point.y * (int) zoom / 2) + this.translateX;
-	//mPosY = (point.y * (int) zoom / 4) - (point.x * (int) zoom / 4) + this.translateY
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		double mPosX = e.getPoint().getX();
-		double mPosY = e.getPoint().getY();
-		//px * zoom/2 = mPosX - (point.y * (int) zoom / 2) - this.translateX
-		//px = (mPosX - (point.y * (int) zoom / 2) - this.translateX) / (zoom/2)
-		
-		//px * zoom/4 = -(mPosY - (point.y * (int) zoom / 4) - this.translateY)
-		//px = (-mPosY + (point.y * (int) zoom / 4) + this.translateY) / (zoom/4)
-		
-		//(-mPosY + (py * zoom / 4) + this.translateY) / (zoom/4) = (mPosX - (py * zoom / 2) - this.translateX) / (zoom/2)
-		//(-mPosY + (py * zoom / 4) + this.translateY) * 2 = (mPosX - (py *zoom / 2) - this.translateX)
-		// -2mPosY + 2(py * zoom/4) + 2this.translateY = mPosX - (py * zoom/2) - this.translateX
-		//-2mPosY + 2this.translateY = mPosX - (py * zoom/2) - this.translateX - 2(py * zoom/4)
-		//-2mPosY + 2this.translateY - mPosX + this.translateX = -(py * zoom/2) - 2(py * zoom/4)
-		//-2mPosY + 2this.translateY - mPosX + this.translateX = (-py * -zoom/2) - (2py * zoom/2)
-		//-2mPosY + 2this.translateY - mPosX + this.translateX = zoom/2(py) - zoom/2(2py)
-		//(-2mPosY + 2this.translateY - mPosX + this.translateX) / zoom/2 = -py
-		//((-2mPosY + 2this.translateY - mPosX + this.translateX) / -zoom/2) = py
-		
-		
-		//(-m + (U * (z / 4)) + y) / (z/4) = (n - (U * (z / 2)) - x) / (z/2)
-		double py = ((2 * mPosY) + mPosX - canvas.getTranslateX() - (2 * canvas.getTranslateY())) / canvas.getZoom();
-		System.out.println(py);
+		int mPosX = (int) e.getPoint().getX();
+		int mPosY = (int) e.getPoint().getY();
+		int pRangeX = mPosX - canvas.getTranslateX();
+		int pRangeY = mPosY - canvas.getTranslateY();
+		int deltaTranslateX = pRangeX/canvas.getZoom() * 20;
+		int deltaTranslateY = pRangeY/canvas.getZoom() * 20;
 		int notches = e.getWheelRotation();
 	    if (notches < 0) {
-	    	canvas.zoomIn();
+	    	canvas.zoomIn(deltaTranslateX, deltaTranslateY);
 	    } else {
-	    	canvas.zoomOut();
+	    	canvas.zoomOut(deltaTranslateX, deltaTranslateY);
 	    }
 	}
 
