@@ -45,6 +45,10 @@ public class MouseControl implements MouseWheelListener, MouseMotionListener, Mo
 			mouseLoc = e.getPoint();
 			canvas.moveWorld(dragAmountX, dragAmountY);
 		}
+		if (SwingUtilities.isLeftMouseButton(e)) {
+			Point p = e.getPoint();
+			selectTile(p);
+		}
 	}
 
 	@Override
@@ -54,16 +58,8 @@ public class MouseControl implements MouseWheelListener, MouseMotionListener, Mo
 	
 	public void mousePressed(MouseEvent e) {
 		if (SwingUtilities.isLeftMouseButton(e)) {
-			double diffY = e.getPoint().getY() - canvas.getTranslateY();
-			double diffX = e.getPoint().getX() - (canvas.getTranslateX() + (((canvas.getFloorSize()+1) * canvas.getZoom())/2));
-			
-			int totalDiffX = (int) Math.ceil((diffX/canvas.getZoom()) - (diffY/(canvas.getZoom()/2)));
-			int totalDiffY = (int) Math.ceil((diffX/canvas.getZoom()) + (diffY/(canvas.getZoom()/2)));
-			
-			int xCoord = (canvas.getFloorSize()/2) + totalDiffX;
-			int yCoord = (canvas.getFloorSize()/2) + totalDiffY - 1;
-			
-			canvas.selectTile(xCoord, yCoord);
+			Point p = e.getPoint();
+			selectTile(p);
 		}
 	}
 	
@@ -89,5 +85,18 @@ public class MouseControl implements MouseWheelListener, MouseMotionListener, Mo
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void selectTile(Point p){
+		double diffY = p.getY() - canvas.getTranslateY();
+		double diffX = p.getX() - (canvas.getTranslateX() + (((canvas.getFloorSize()+1) * canvas.getZoom())/2));
+		
+		int totalDiffX = (int) Math.ceil((diffX/canvas.getZoom()) - (diffY/(canvas.getZoom()/2)));
+		int totalDiffY = (int) Math.ceil((diffX/canvas.getZoom()) + (diffY/(canvas.getZoom()/2)));
+		
+		int xCoord = (canvas.getFloorSize()/2) + totalDiffX;
+		int yCoord = (canvas.getFloorSize()/2) + totalDiffY - 1;
+		
+		canvas.selectTile(xCoord, yCoord);
 	}
 }

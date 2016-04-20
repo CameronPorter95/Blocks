@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import javax.imageio.ImageIO;
@@ -20,9 +21,9 @@ import javax.swing.JPanel;
 public class GameCanvas extends JPanel {
 	
 	private int zoom = 200;
-	private int floorSize = 6; //Floor is a 69x69 grid.
+	private int floorSize = 100; //Floor is a floorSizexfloorSize grid.
 	private int translateX, translateY = 0;
-	private ArrayList<Point> selectedTiles = new ArrayList<Point>();
+	private HashSet<Point> selectedTiles = new HashSet<Point>();
 	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();
 	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
 
@@ -49,14 +50,13 @@ public class GameCanvas extends JPanel {
 		    for (int j = 0; j < floorSize; j++){
 		    	Point point = new Point(i, j);
 		    	Point p = twoDToIso(point);
-		    	for(Point p2 : selectedTiles){
-		    		System.out.println(p2);
-		    	}
-		    	if(selectedTiles.contains(point)){
-			    	g.drawImage(scaledImages.get("checkeredFloor"), p.x, p.y, getParent());
-		    	}
-		    	else{
-			    	g.drawImage(scaledImages.get("floor"), p.x, p.y, getParent());
+		    	if(p.getX() < this.getWidth() && p.getX() > -this.zoom && p.getY() < this.getHeight() && p.getY() > -this.zoom/2){
+		    		if(selectedTiles.contains(point)){
+				    	g.drawImage(scaledImages.get("checkeredFloor"), p.x, p.y, getParent());
+			    	}
+			    	else{
+				    	g.drawImage(scaledImages.get("floor"), p.x, p.y, getParent());
+			    	}
 		    	}
 		    }
 		}
