@@ -2,18 +2,18 @@ package view;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-
 import javax.swing.SwingUtilities;
 
-public class MouseListener implements MouseWheelListener, MouseMotionListener{
+public class MouseControl implements MouseWheelListener, MouseMotionListener, MouseListener{
 
 	private GameCanvas canvas;
 	private Point mouseLoc = null;
 	
-	public MouseListener(GameCanvas canvas){
+	public MouseControl(GameCanvas canvas){
 		this.canvas = canvas;
 	}
 	
@@ -50,5 +50,44 @@ public class MouseListener implements MouseWheelListener, MouseMotionListener{
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		mouseLoc = null;
+	}
+	
+	public void mousePressed(MouseEvent e) {
+		if (SwingUtilities.isLeftMouseButton(e)) {
+			double diffY = e.getPoint().getY() - canvas.getTranslateY();
+			double diffX = e.getPoint().getX() - (canvas.getTranslateX() + (((canvas.getFloorSize()+1) * canvas.getZoom())/2));
+			
+			int totalDiffX = (int) Math.ceil((diffX/canvas.getZoom()) - (diffY/(canvas.getZoom()/2)));
+			int totalDiffY = (int) Math.ceil((diffX/canvas.getZoom()) + (diffY/(canvas.getZoom()/2)));
+			
+			double xCoord = (canvas.getFloorSize()/2) + totalDiffX;
+			double yCoord = (canvas.getFloorSize()/2) + totalDiffY;
+			
+			System.out.println(xCoord + ", " + yCoord);
+		}
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

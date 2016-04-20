@@ -6,8 +6,8 @@ import javax.swing.JFrame;
 @SuppressWarnings("serial")
 public class Frame extends JFrame {
 	
-	public Frame(Dimension screenSize){
-		this.setMinimumSize(screenSize);
+	public Frame(){
+		this.setMinimumSize(new Dimension(800, 600));
 		setupFrame();
 	}
 	
