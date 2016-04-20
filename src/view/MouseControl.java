@@ -60,10 +60,10 @@ public class MouseControl implements MouseWheelListener, MouseMotionListener, Mo
 			int totalDiffX = (int) Math.ceil((diffX/canvas.getZoom()) - (diffY/(canvas.getZoom()/2)));
 			int totalDiffY = (int) Math.ceil((diffX/canvas.getZoom()) + (diffY/(canvas.getZoom()/2)));
 			
-			double xCoord = (canvas.getFloorSize()/2) + totalDiffX;
-			double yCoord = (canvas.getFloorSize()/2) + totalDiffY;
+			int xCoord = (canvas.getFloorSize()/2) + totalDiffX;
+			int yCoord = (canvas.getFloorSize()/2) + totalDiffY - 1;
 			
-			System.out.println(xCoord + ", " + yCoord);
+			canvas.selectTile(xCoord, yCoord);
 		}
 	}
 	

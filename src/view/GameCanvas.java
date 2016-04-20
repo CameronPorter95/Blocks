@@ -8,7 +8,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +49,9 @@ public class GameCanvas extends JPanel {
 		    for (int j = 0; j < floorSize; j++){
 		    	Point point = new Point(i, j);
 		    	Point p = twoDToIso(point);
+		    	for(Point p2 : selectedTiles){
+		    		System.out.println(p2);
+		    	}
 		    	if(selectedTiles.contains(point)){
 			    	g.drawImage(scaledImages.get("checkeredFloor"), p.x, p.y, getParent());
 		    	}
@@ -81,7 +83,7 @@ public class GameCanvas extends JPanel {
 		
 		for(String s : filenames){
 			try {
-				BufferedImage image = ImageIO.read(getClass().getResource("assets/" + "floor" + ".png"));
+				BufferedImage image = ImageIO.read(getClass().getResource("assets/" + (String) s + ".png"));
 				images.put(s, image);
 				scaledImages.put(s, getScaledImage(image, zoom, zoom/2)) ;
 			} catch (IOException e) {
@@ -104,7 +106,6 @@ public class GameCanvas extends JPanel {
 	public void zoomIn(int deltaTranslateX, int deltaTranslateY){
 		if(zoom <= 280){
 			this.zoom = this.zoom + 20;
-			//this.translateX = this.translateX - (20*((floorSize+1)/2));
 			this.translateX = this.translateX - deltaTranslateX;
 			this.translateY = this.translateY - deltaTranslateY;
 			for (Iterator<Entry<String, BufferedImage>> iterator = this.images.entrySet().iterator(); iterator.hasNext();) {
@@ -137,6 +138,7 @@ public class GameCanvas extends JPanel {
 	public void selectTile(int xCoord, int yCoord){
 		Point p = new Point(xCoord, yCoord);
 		this.selectedTiles.add(p);
+		repaint();
 	}
 	
 	/*----------------------------Getters & Setters------------------------------*/
