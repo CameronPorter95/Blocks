@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 public class GameCanvas extends JPanel {
 	
 	private int zoom = 200;
-	private int floorSize = 69; //Floor is a 69x69 grid.
+	private int floorSize = 5; //Floor is a 69x69 grid.
 	private int translateX, translateY = 0;
 	private BufferedImage floorTile = null;
 	private BufferedImage scaledFloorTile;
@@ -52,7 +52,7 @@ public class GameCanvas extends JPanel {
 	
 	private Point twoDToIso(Point point){
 		Point tempPt = new Point(0,0);
-		tempPt.x = (point.x * (int) zoom / 2) + (point.y * (int) zoom / 2) + this.translateX;
+		tempPt.x = (point.x * (int) zoom / 2) + (point.y * (int) zoom / 2) + this.translateX; /*rearrange this equation for x and y and should be able to find the tile the mouse hovers over*/
 		tempPt.y = (point.y * (int) zoom / 4) - (point.x * (int) zoom / 4) + this.translateY;
 		return tempPt;
 	}
@@ -99,5 +99,23 @@ public class GameCanvas extends JPanel {
 		this.translateX = this.translateX + (int) x;
 		this.translateY = this.translateY + (int) y;
 		repaint();
+	}
+	
+	/*----------------------------Getters & Setters------------------------------*/
+	
+	public double getTranslateX(){
+		return this.translateX;
+	}
+	
+	public double getTranslateY(){
+		return this.translateY;
+	}
+	
+	public int getFloorSize(){
+		return floorSize;
+	}
+	
+	public double getZoom(){
+		return this.zoom;
 	}
 }
