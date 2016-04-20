@@ -6,6 +6,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import javax.swing.SwingUtilities;
+
 public class MouseListener implements MouseWheelListener, MouseMotionListener{
 
 	private GameCanvas canvas;
@@ -33,14 +35,16 @@ public class MouseListener implements MouseWheelListener, MouseMotionListener{
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		double dragAmountX = 0;
-		double dragAmountY = 0;
-		if(mouseLoc != null){
-			dragAmountX = e.getPoint().getX() - mouseLoc.getX();
-			dragAmountY = e.getPoint().getY() - mouseLoc.getY();
+		if (SwingUtilities.isRightMouseButton(e)) {
+			double dragAmountX = 0;
+			double dragAmountY = 0;
+			if(mouseLoc != null){
+				dragAmountX = e.getPoint().getX() - mouseLoc.getX();
+				dragAmountY = e.getPoint().getY() - mouseLoc.getY();
+			}
+			mouseLoc = e.getPoint();
+			canvas.moveWorld(dragAmountX, dragAmountY);
 		}
-		mouseLoc = e.getPoint();
-		canvas.moveWorld(dragAmountX, dragAmountY);
 	}
 
 	@Override
