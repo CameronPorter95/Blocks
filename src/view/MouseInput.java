@@ -36,6 +36,9 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		if(!SwingUtilities.isRightMouseButton(e)) {
+			mouseLoc = null;
+		}
 		if (SwingUtilities.isRightMouseButton(e)) {
 			double dragAmountX = 0;
 			double dragAmountY = 0;
