@@ -132,6 +132,16 @@ public class GameCanvas extends JPanel {
 	}
 	
 	public void moveWorld(double x, double y){
+//		if(x < 0 && this.translateX <= this.zoom * (floorSize * -0.99)){
+//			return;
+//		}
+//		System.out.println(this.translateX);
+//		if(y < 0 && this.translateY <= (this.zoom/2) * (floorSize * -0.45)){
+//			return;
+//		}
+//		if(x > 0 && this.translateX >= this.zoom * (floorSize * 0.25)){
+//			return;
+//		}
 		this.translateX = this.translateX + (int) x;
 		this.translateY = this.translateY + (int) y;
 		repaint();
@@ -140,6 +150,12 @@ public class GameCanvas extends JPanel {
 	public void selectTile(int xCoord, int yCoord){
 		Point p = new Point(xCoord, yCoord);
 		this.selectedTiles.add(p);
+		repaint();
+	}
+	
+	public void deselectTile(int xCoord, int yCoord){
+		Point p = new Point(xCoord, yCoord);
+		this.selectedTiles.remove(p);
 		repaint();
 	}
 	
@@ -164,5 +180,13 @@ public class GameCanvas extends JPanel {
 	public void clearSelectedTiles(){
 		this.selectedTiles.clear();
 		repaint();
+	}
+	
+	public void setTranslateX(int x){
+		this.translateX = x;
+	}
+	
+	public void setTranslateY(int y){
+		this.translateY = y;
 	}
 }

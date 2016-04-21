@@ -49,9 +49,13 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 			mouseLoc = e.getPoint();
 			canvas.moveWorld(dragAmountX, dragAmountY);
 		}
-		if (SwingUtilities.isLeftMouseButton(e)) {
+		if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown()) {
 			Point p = e.getPoint();
-			selectTile(p);
+			selectTile(p, true);
+		}
+		else if (SwingUtilities.isLeftMouseButton(e)) {
+			Point p = e.getPoint();
+			selectTile(p, false);
 		}
 	}
 
@@ -97,9 +101,13 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 	}
 	
 	public void mousePressed(MouseEvent e) {
-		if (SwingUtilities.isLeftMouseButton(e)) {
+		if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown()) {
 			Point p = e.getPoint();
-			selectTile(p);
+			selectTile(p, true);
+		}
+		else if (SwingUtilities.isLeftMouseButton(e)) {
+			Point p = e.getPoint();
+			selectTile(p, false);
 		}
 	}
 	
@@ -127,7 +135,7 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 		
 	}
 	
-	private void selectTile(Point p){
+	private void selectTile(Point p, boolean deselect){
 		double diffY = p.getY() - canvas.getTranslateY();
 		double diffX = p.getX() - (canvas.getTranslateX() + (((canvas.getFloorSize()+1) * canvas.getZoom())/2));
 		
@@ -137,6 +145,10 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 		int xCoord = (canvas.getFloorSize()/2) + totalDiffX;
 		int yCoord = (canvas.getFloorSize()/2) + totalDiffY - 1;
 		
+		if(deselect){
+			canvas.deselectTile(xCoord, yCoord);
+			return;
+		}
 		canvas.selectTile(xCoord, yCoord);
 	}
 	

@@ -20,6 +20,7 @@ public class Main {
 	private static final String ZOOM_IN = "zoom in";
 	private static final String ZOOM_OUT = "zoom out";
 	private static final String CLEAR_SELECTION = "clear selection";
+	private static final String SPACE = "space";
 	
 	private Main(){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -42,10 +43,12 @@ public class Main {
 		functionality.getInputMap(IFW).put(KeyStroke.getKeyStroke("EQUALS"), ZOOM_IN);
 		functionality.getInputMap(IFW).put(KeyStroke.getKeyStroke("MINUS"), ZOOM_OUT);
 		functionality.getInputMap(IFW).put(KeyStroke.getKeyStroke("C"), CLEAR_SELECTION);
+		functionality.getInputMap(IFW).put(KeyStroke.getKeyStroke("SPACE"), SPACE);
 		
 		functionality.getActionMap().put(ZOOM_IN, new KeyboardInput("=", this.canvas));
 		functionality.getActionMap().put(ZOOM_OUT, new KeyboardInput("Minus", this.canvas));
 		functionality.getActionMap().put(CLEAR_SELECTION, new KeyboardInput("c", this.canvas));
+		functionality.getActionMap().put(SPACE, new KeyboardInput("space", this.canvas));
 		
 		this.frame.add(functionality);
 	}
