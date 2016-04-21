@@ -15,6 +15,7 @@ public class Frame extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//todo: this.setIconImage(new ImageIcon(imgURL).getImage());
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		setUndecorated(true);
 		pack();
 		setVisible(true);
 	}

@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -54,6 +55,42 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		mouseLoc = null;
+		if(e.getPoint().getX() == 0){
+			new Thread() {
+		        public void run() {
+		        	while(MouseInfo.getPointerInfo().getLocation().getX() == 0){
+						moveWorld(1, 0);
+					}
+		        }
+			}.start();
+		}
+		else if(e.getPoint().getX() == canvas.getWidth()-1){
+			new Thread() {
+		        public void run() {
+		        	while(MouseInfo.getPointerInfo().getLocation().getX() == canvas.getWidth()-1){
+						moveWorld(-1, 0);
+					}
+		        }
+			}.start();
+		}
+		if(e.getPoint().getY() == 0){
+			new Thread() {
+		        public void run() {
+		        	while(MouseInfo.getPointerInfo().getLocation().getY() == 0){
+						moveWorld(0, 1);
+					}
+		        }
+			}.start();
+		}
+		else if(e.getPoint().getY() == canvas.getHeight()-1){
+			new Thread() {
+		        public void run() {
+		        	while(MouseInfo.getPointerInfo().getLocation().getY() == canvas.getHeight()-1){
+						moveWorld(0, -1);
+					}
+		        }
+			}.start();
+		}
 	}
 	
 	public void mousePressed(MouseEvent e) {
@@ -98,5 +135,15 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 		int yCoord = (canvas.getFloorSize()/2) + totalDiffY - 1;
 		
 		canvas.selectTile(xCoord, yCoord);
+	}
+	
+	private void moveWorld(int x, int y) {
+		canvas.moveWorld(x, y);
+	    try {
+	        Thread.sleep(10);
+	    } 
+	    catch (InterruptedException e) {
+	        e.printStackTrace();
+	    }
 	}
 }

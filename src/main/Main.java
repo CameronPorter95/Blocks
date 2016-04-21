@@ -25,11 +25,12 @@ public class Main {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		this.frame = new Frame();
 		this.canvas = new GameCanvas(screenSize);
-		MouseInput mouseControl = new MouseInput(canvas);
-		this.canvas.addMouseListener(mouseControl);
-        this.canvas.addMouseWheelListener(mouseControl);
-        this.canvas.addMouseMotionListener(mouseControl); 
-        this.frame.setContentPane(canvas);
+		MouseInput mouseInput = new MouseInput(canvas);
+		this.canvas.addMouseListener(mouseInput);
+        this.canvas.addMouseWheelListener(mouseInput);
+        this.canvas.addMouseMotionListener(mouseInput);
+        this.canvas.setDoubleBuffered(true);
+        this.frame.setContentPane(canvas); 
         keyBindings();
 	}
 
