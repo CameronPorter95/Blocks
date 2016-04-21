@@ -16,19 +16,22 @@ public class KeyboardInput extends AbstractAction{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (action.equals("=")){
+		if(action.equals("=")){
 			int pRangeX = (canvas.getWidth()/2) - canvas.getTranslateX();
 			int pRangeY = (canvas.getHeight()/2) - canvas.getTranslateY();
 			int deltaTranslateX = pRangeX/canvas.getZoom() * 20;
 			int deltaTranslateY = pRangeY/canvas.getZoom() * 20;
 			canvas.zoomIn(deltaTranslateX, deltaTranslateY);
 		}
-		else if (action.equals("Minus")){
+		else if(action.equals("Minus")){
 			int pRangeX = (canvas.getWidth()/2) - canvas.getTranslateX();
 			int pRangeY = (canvas.getHeight()/2) - canvas.getTranslateY();
 			int deltaTranslateX = pRangeX/canvas.getZoom() * 20;
 			int deltaTranslateY = pRangeY/canvas.getZoom() * 20;
 			canvas.zoomOut(deltaTranslateX, deltaTranslateY);
+		}
+		else if(action.equals("c")){
+			canvas.clearSelectedTiles();
 		}
 	}
 }
