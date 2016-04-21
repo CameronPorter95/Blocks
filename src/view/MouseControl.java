@@ -8,7 +8,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.swing.SwingUtilities;
 
-public class MouseControl implements MouseWheelListener, MouseMotionListener, MouseListener{
+public class MouseControl implements MouseWheelListener, MouseMotionListener, MouseListener {
 
 	private GameCanvas canvas;
 	private Point mouseLoc = null;

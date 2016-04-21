@@ -52,7 +52,7 @@ public class GameCanvas extends JPanel {
 		    	Point p = twoDToIso(point);
 		    	if(p.getX() < this.getWidth() && p.getX() > -this.zoom && p.getY() < this.getHeight() && p.getY() > -this.zoom/2){
 		    		if(selectedTiles.contains(point)){
-				    	g.drawImage(scaledImages.get("checkeredFloor"), p.x, p.y, getParent());
+				    	g.drawImage(scaledImages.get("marbleFloor"), p.x, p.y, getParent());
 			    	}
 			    	else{
 				    	g.drawImage(scaledImages.get("floor"), p.x, p.y, getParent());
@@ -74,6 +74,8 @@ public class GameCanvas extends JPanel {
 		
 		filenames.add("floor");
 		filenames.add("checkeredFloor");
+		filenames.add("marbleFloor");
+		filenames.add("wall");
 		
 		return filenames;
 	}
@@ -157,5 +159,10 @@ public class GameCanvas extends JPanel {
 	
 	public int getZoom(){
 		return this.zoom;
+	}
+	
+	public void clearSelectedTiles(){
+		this.selectedTiles.clear();
+		repaint();
 	}
 }
