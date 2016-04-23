@@ -34,7 +34,6 @@ public class Main {
         frame.setContentPane(canvas); 
         frame.addSideBar();
         frame.setLayout(null);
-        frame.pack();
         keyBindings();
 	}
 	
