@@ -5,15 +5,15 @@ import java.awt.Toolkit;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
+import Interaction.KeyboardInput;
+import Interaction.MouseInput;
 import view.Frame;
 import view.GameCanvas;
-import view.KeyboardInput;
-import view.MouseInput;
 
 public class Main {
 	
-	private GameCanvas canvas;
 	private Frame frame;
+	private GameCanvas canvas;
 	
 	private static JLabel functionality = new JLabel();
 	private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
@@ -24,17 +24,20 @@ public class Main {
 	
 	private Main(){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		this.frame = new Frame();
-		this.canvas = new GameCanvas(screenSize);
+		frame = new Frame();
+		canvas = new GameCanvas(screenSize);
 		MouseInput mouseInput = new MouseInput(canvas);
-		this.canvas.addMouseListener(mouseInput);
-        this.canvas.addMouseWheelListener(mouseInput);
-        this.canvas.addMouseMotionListener(mouseInput);
-        this.canvas.setDoubleBuffered(true);
-        this.frame.setContentPane(canvas); 
+		canvas.addMouseListener(mouseInput);
+        canvas.addMouseWheelListener(mouseInput);
+        canvas.addMouseMotionListener(mouseInput);
+        canvas.setDoubleBuffered(true);
+        frame.setContentPane(canvas); 
+        frame.addSideBar();
+        frame.setLayout(null);
+        frame.pack();
         keyBindings();
 	}
-
+	
 	/**
 	 * Binds the given keyboard inputs to actions so pressing the key calls
 	 * a new move action.

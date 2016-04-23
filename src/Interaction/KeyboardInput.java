@@ -1,7 +1,9 @@
-package view;
+package Interaction;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+
+import view.GameCanvas;
 
 @SuppressWarnings("serial")
 public class KeyboardInput extends AbstractAction{

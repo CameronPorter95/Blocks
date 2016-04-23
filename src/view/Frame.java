@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 @SuppressWarnings("serial")
 public class Frame extends JFrame {
 	
+	SideBar sideBar;
+	
 	public Frame(){
 		this.setMinimumSize(new Dimension(800, 600));
 		setupFrame();
@@ -16,7 +18,11 @@ public class Frame extends JFrame {
 		//todo: this.setIconImage(new ImageIcon(imgURL).getImage());
 		//this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		//setUndecorated(true);
-		pack();
 		setVisible(true);
+	}
+	
+	public void addSideBar(){
+		sideBar = new SideBar(this.getSize());
+		this.add(sideBar);
 	}
 }
