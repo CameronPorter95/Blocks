@@ -13,12 +13,13 @@ import javax.swing.Timer;
 public class SideBar extends JPanel{
 	
 	private Timer timer;
-	int width = 0;
+	int hiddenLocation;
 
-	public SideBar(Dimension frameSize){
+	public SideBar(Dimension panelSize, int yOffset){
+		this.hiddenLocation = (int) (-panelSize.getWidth()/15);
 		this.setBackground(Color.BLACK);
-		this.setLocation(0,(int) frameSize.getHeight()/15);
-		slidePanelInFromLeft(this, (int) frameSize.getWidth()/15, (int) (frameSize.getHeight()/1.25));
+		this.setSize((int) panelSize.getWidth()/15, (int) (panelSize.getHeight()/1.25));
+		slidePanelInFromLeft(this, (int) ((panelSize.getHeight() - this.getHeight())/2) + yOffset);
 		//addComponentsToPane(frame.getContentPane());
 	}
 	
@@ -27,18 +28,18 @@ public class SideBar extends JPanel{
         super.paintComponent(g);
 	}
 	
-	synchronized void slidePanelInFromLeft(JPanel panel, int targetWidth, int y) {
+	synchronized void slidePanelInFromLeft(JPanel panel, int y) {
 		timer = new Timer(5, new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				if (width < targetWidth){
-					width = width + 1;
-					panel.setSize(new Dimension(width,y));
+				if (hiddenLocation < 0){
+					hiddenLocation = hiddenLocation + 1;
+					panel.setLocation(hiddenLocation, y);
 					panel.repaint();
 				} else {
 					timer.stop();
 				}
 
-				panel.setSize(new Dimension(width,y));
+				panel.setLocation(hiddenLocation, y);
 				panel.repaint();
 
 			}

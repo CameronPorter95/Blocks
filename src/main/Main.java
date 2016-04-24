@@ -31,7 +31,7 @@ public class Main {
         canvas.addMouseWheelListener(mouseInput);
         canvas.addMouseMotionListener(mouseInput);
         canvas.setDoubleBuffered(true);
-        frame.setContentPane(canvas); 
+        frame.setContentPane(canvas);
         frame.addSideBar();
         frame.setLayout(null);
         keyBindings();
