@@ -9,11 +9,13 @@ import Interaction.KeyboardInput;
 import Interaction.MouseInput;
 import view.Frame;
 import view.GameCanvas;
+import view.SideBar;
 
 public class Main {
 	
 	private Frame frame;
 	private GameCanvas canvas;
+	private SideBar sideBar;
 	
 	private static JLabel functionality = new JLabel();
 	private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
@@ -21,6 +23,7 @@ public class Main {
 	private static final String ZOOM_OUT = "zoom out";
 	private static final String CLEAR_SELECTION = "clear selection";
 	private static final String SPACE = "space";
+	private static final String TAB = "tab";
 	
 	private Main(){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -32,7 +35,7 @@ public class Main {
         canvas.addMouseMotionListener(mouseInput);
         canvas.setDoubleBuffered(true);
         frame.setContentPane(canvas);
-        frame.addSideBar();
+        sideBar = frame.addSideBar();
         frame.setLayout(null);
         keyBindings();
 	}
@@ -46,11 +49,13 @@ public class Main {
 		functionality.getInputMap(IFW).put(KeyStroke.getKeyStroke("MINUS"), ZOOM_OUT);
 		functionality.getInputMap(IFW).put(KeyStroke.getKeyStroke("C"), CLEAR_SELECTION);
 		functionality.getInputMap(IFW).put(KeyStroke.getKeyStroke("SPACE"), SPACE);
+		functionality.getInputMap(IFW).put(KeyStroke.getKeyStroke("TAB"), TAB);
 		
 		functionality.getActionMap().put(ZOOM_IN, new KeyboardInput("=", this.canvas));
 		functionality.getActionMap().put(ZOOM_OUT, new KeyboardInput("Minus", this.canvas));
 		functionality.getActionMap().put(CLEAR_SELECTION, new KeyboardInput("c", this.canvas));
 		functionality.getActionMap().put(SPACE, new KeyboardInput("space", this.canvas));
+		functionality.getActionMap().put(TAB, new KeyboardInput("tab", this.frame, this.sideBar));
 		
 		this.frame.add(functionality);
 	}

@@ -22,15 +22,13 @@ public class Frame extends JFrame implements ComponentListener{
 		//setUndecorated(true);
 		setVisible(true);
 		this.addComponentListener(this);
+		setFocusTraversalKeysEnabled(false);
 	}
 	
-	public void addSideBar(){
-		int yOffset = 0;
-		if(!this.isUndecorated()){
-			yOffset = -17;
-		}
-		sideBar = new SideBar(this.getSize(), yOffset);
+	public SideBar addSideBar(){
+		sideBar = new SideBar(this.getSize());
 		this.add(sideBar);
+		return sideBar;
 	}
 
 	@Override
@@ -48,8 +46,14 @@ public class Frame extends JFrame implements ComponentListener{
 	@Override
 	public void componentResized(ComponentEvent arg0) {
 		if(this.sideBar != null){
-			sideBar.setSize(this.getWidth()/15, (int) (this.getContentPane().getHeight()/1.25));
-			sideBar.setLocation(0, (int) ((this.getContentPane().getHeight() - sideBar.getHeight())/2));
+			if(this.sideBar.getExtended() == true){
+				sideBar.setSize(this.getWidth()/15, (int) (this.getHeight()/1.25));
+				sideBar.setLocation(0, (int) ((this.getContentPane().getHeight() - sideBar.getHeight())/2));
+			}
+			else{
+				sideBar.setSize(this.getWidth()/15, (int) (this.getHeight()/1.25));
+				sideBar.setLocation(-sideBar.getWidth(), 0);
+			}
 		}
 	}
 

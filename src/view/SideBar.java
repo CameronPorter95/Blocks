@@ -14,12 +14,14 @@ public class SideBar extends JPanel{
 	
 	private Timer timer;
 	int hiddenLocation;
+	boolean extended = false;
 
-	public SideBar(Dimension panelSize, int yOffset){
+	public SideBar(Dimension panelSize){
 		this.hiddenLocation = (int) (-panelSize.getWidth()/15);
 		this.setBackground(Color.BLACK);
 		this.setSize((int) panelSize.getWidth()/15, (int) (panelSize.getHeight()/1.25));
-		slidePanelInFromLeft(this, (int) ((panelSize.getHeight() - this.getHeight())/2) + yOffset);
+		System.out.println(panelSize);
+		this.setLocation(-this.getWidth(), 0);
 		//addComponentsToPane(frame.getContentPane());
 	}
 	
@@ -28,7 +30,7 @@ public class SideBar extends JPanel{
         super.paintComponent(g);
 	}
 	
-	synchronized void slidePanelInFromLeft(JPanel panel, int y) {
+	public synchronized void slidePanelInFromLeft(JPanel panel, int y) {
 		timer = new Timer(5, new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				if (hiddenLocation < 0){
@@ -45,6 +47,14 @@ public class SideBar extends JPanel{
 			}
 		});
 		timer.start();
+	}
+	
+	public void setExtended(boolean extended){
+		this.extended = extended;
+	}
+	
+	public boolean getExtended(){
+		return extended;
 	}
 }
 	
