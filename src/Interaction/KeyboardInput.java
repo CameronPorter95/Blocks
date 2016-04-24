@@ -52,10 +52,11 @@ public class KeyboardInput extends AbstractAction{
 		}
 		else if(action.equals("tab")){
 			if(sideBar.getExtended() == false){
-				sideBar.slidePanelInFromLeft(sideBar, (int) ((frame.getHeight() - sideBar.getHeight())/2) - 20);
+				sideBar.slidePanel(sideBar, (int) ((frame.getHeight() - sideBar.getHeight())/2) - 20, true);
 				sideBar.setExtended(true);
 			}
 			else{
+				sideBar.slidePanel(sideBar, (int) ((frame.getHeight() - sideBar.getHeight())/2) - 20, false);
 				sideBar.setExtended(false);
 			}
 		}
