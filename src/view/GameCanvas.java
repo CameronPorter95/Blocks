@@ -16,20 +16,23 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import state.Database;
 
 @SuppressWarnings("serial")
 public class GameCanvas extends JPanel {
 	
+	//private Database database;
 	private int zoom = 200;
 	private int floorSize = 100; //Floor is a floorSizexfloorSize grid.
 	private int translateX, translateY = 0;
 	private HashSet<Point> selectedTiles = new HashSet<Point>();
-	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();
 	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
+	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();
 
-	public GameCanvas(Dimension screenSize){
+	public GameCanvas(Dimension frameSize, Database database){
 		this.setBackground(Color.BLACK);
-		setSize(screenSize);
+		setSize(frameSize);
+		//this.database = database;
 		this.translateX = ((int) (this.getSize().getWidth() / 2)) - ((floorSize+1) * zoom/2);
 		this.translateY = this.getHeight()/2;
 		readImages();
@@ -110,7 +113,7 @@ public class GameCanvas extends JPanel {
 			this.zoom = this.zoom + 20;
 			this.translateX = this.translateX - deltaTranslateX;
 			this.translateY = this.translateY - deltaTranslateY;
-			for (Iterator<Entry<String, BufferedImage>> iterator = this.images.entrySet().iterator(); iterator.hasNext();) {
+			for (Iterator<Entry<String, BufferedImage>> iterator = images.entrySet().iterator(); iterator.hasNext();) {
 				Entry<String, BufferedImage> entry = iterator.next();
 				scaledImages.put(entry.getKey(), getScaledImage(entry.getValue(), zoom, zoom/2));
 			}
@@ -123,7 +126,7 @@ public class GameCanvas extends JPanel {
 			this.zoom = this.zoom - 20;
 			this.translateX = this.translateX + deltaTranslateX;
 			this.translateY = this.translateY + deltaTranslateY;
-			for (Iterator<Entry<String, BufferedImage>> iterator = this.images.entrySet().iterator(); iterator.hasNext();) {
+			for (Iterator<Entry<String, BufferedImage>> iterator = images.entrySet().iterator(); iterator.hasNext();) {
 				Entry<String, BufferedImage> entry = iterator.next();
 				scaledImages.put(entry.getKey(), getScaledImage(entry.getValue(), zoom, zoom/2));
 			}
@@ -159,6 +162,11 @@ public class GameCanvas extends JPanel {
 		repaint();
 	}
 	
+	public void clearSelectedTiles(){
+		this.selectedTiles.clear();
+		repaint();
+	}
+	
 	/*----------------------------Getters & Setters------------------------------*/
 	
 	public int getTranslateX(){
@@ -177,9 +185,8 @@ public class GameCanvas extends JPanel {
 		return this.zoom;
 	}
 	
-	public void clearSelectedTiles(){
-		this.selectedTiles.clear();
-		repaint();
+	public HashMap<String, BufferedImage> getImages(){
+		return this.images;
 	}
 	
 	public void setTranslateX(int x){

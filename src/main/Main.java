@@ -1,12 +1,11 @@
 package main;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import Interaction.KeyboardInput;
 import Interaction.MouseInput;
+import state.Database;
 import view.Frame;
 import view.GameCanvas;
 import view.SideBar;
@@ -26,16 +25,17 @@ public class Main {
 	private static final String TAB = "tab";
 	
 	private Main(){
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Database database = new Database();
 		frame = new Frame();
-		canvas = new GameCanvas(screenSize);
+		canvas = new GameCanvas(frame.getSize(), database);
+		sideBar = new SideBar(frame.getSize(), canvas);
 		MouseInput mouseInput = new MouseInput(canvas);
 		canvas.addMouseListener(mouseInput);
         canvas.addMouseWheelListener(mouseInput);
         canvas.addMouseMotionListener(mouseInput);
         canvas.setDoubleBuffered(true);
         frame.setContentPane(canvas);
-        sideBar = frame.addSideBar();
+		frame.setSideBar(sideBar);
         frame.setLayout(null);
         keyBindings();
 	}

@@ -25,10 +25,9 @@ public class Frame extends JFrame implements ComponentListener{
 		setFocusTraversalKeysEnabled(false);
 	}
 	
-	public SideBar addSideBar(){
-		sideBar = new SideBar(this.getSize());
+	public void setSideBar(SideBar sideBar){
+		this.sideBar = sideBar;
 		this.add(sideBar);
-		return sideBar;
 	}
 
 	@Override
