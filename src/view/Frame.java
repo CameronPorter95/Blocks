@@ -53,6 +53,9 @@ public class Frame extends JFrame implements ComponentListener{
 				sideBar.setLocation(-sideBar.getWidth(), 0);
 			}
 			sideBar.scaleImages();
+			sideBar.getImageLocations().clear();
+			sideBar.setYPos(10);
+			sideBar.addToImageLocations();
 		}
 	}
 

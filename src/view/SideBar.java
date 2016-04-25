@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +13,6 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
-
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -21,10 +21,11 @@ public class SideBar extends JPanel{
 	
 	private GameCanvas canvas;
 	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();
+	private HashMap<Point, BufferedImage> imageLocations = new HashMap<Point, BufferedImage>();
 	private Timer timer;
-	int location;
-	boolean extended = false;
-	final static boolean RIGHT_TO_LEFT = false;
+	private int yPos = this.getY() + 10;
+	private int location;
+	private boolean extended = false;
 
 	public SideBar(Dimension frameSize, GameCanvas canvas){
 		this.canvas = canvas;
@@ -33,6 +34,7 @@ public class SideBar extends JPanel{
 		this.setSize((int) frameSize.getWidth()/15, (int) (frameSize.getHeight()/1.25));
 		this.setLocation(-this.getWidth(), 0);
 		scaleImages();
+		addToImageLocations();
 	}
 		
 	
@@ -43,7 +45,19 @@ public class SideBar extends JPanel{
 	}
 	
 	private void addComponentsToPane(Graphics g) {
-        g.drawImage(scaledImages.get("wall"), this.getWidth()/3, this.getHeight()/2, getParent());
+		for (Iterator<Entry<Point, BufferedImage>> iterator = imageLocations.entrySet().iterator(); iterator.hasNext();) {
+			Entry<Point, BufferedImage> entry = iterator.next();
+			Point position = entry.getKey();
+			g.drawImage((Image) entry.getValue(), (int) position.getX(), (int) position.getY(), getParent());
+		}
+	}
+	
+	public void addToImageLocations(){
+		int xPos = this.getWidth()/6;
+		for(BufferedImage image : scaledImages.values()){
+			imageLocations.put(new Point(xPos, yPos), image);
+			yPos = yPos + image.getHeight() + 20;
+		}
 	}
 	
 	public void scaleImages(){
@@ -95,11 +109,24 @@ public class SideBar extends JPanel{
 		timer.start();
 	}
 	
+	public void selectBlock(Point point, BufferedImage image){
+		imageLocations.put(point, image);
+		repaint();
+	}
+	
 	public boolean getExtended(){
 		return extended;
 	}
 	
+	public HashMap<Point, BufferedImage> getImageLocations(){
+		return this.imageLocations;
+	}
+	
 	public void setExtended(boolean extended){
 		this.extended = extended;
+	}
+	
+	public void setYPos(int yPos){
+		this.yPos = yPos;
 	}
 }

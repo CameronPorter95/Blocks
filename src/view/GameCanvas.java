@@ -27,7 +27,9 @@ public class GameCanvas extends JPanel {
 	private int translateX, translateY = 0;
 	private HashSet<Point> selectedTiles = new HashSet<Point>();
 	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
+	private HashMap<BufferedImage, BufferedImage> selectedImages = new HashMap<BufferedImage, BufferedImage>(); //Maps the selected with the non-selected.
 	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();
+	private HashMap<String, BufferedImage> selectedScaledImages = new HashMap<String, BufferedImage>();
 
 	public GameCanvas(Dimension frameSize, Database database){
 		this.setBackground(Color.BLACK);
@@ -35,7 +37,8 @@ public class GameCanvas extends JPanel {
 		//this.database = database;
 		this.translateX = ((int) (this.getSize().getWidth() / 2)) - ((floorSize+1) * zoom/2);
 		this.translateY = this.getHeight()/2;
-		readImages();
+		readImages(false);
+		readImages(true);
 		repaint();
 	}
 	
@@ -72,26 +75,38 @@ public class GameCanvas extends JPanel {
 		return tempPt;
 	}
 	
-	private ArrayList<String> addToFilenames(){
+	private ArrayList<String> addToFilenames(boolean selected){
 		ArrayList<String> filenames = new ArrayList<String>();
 		
-		filenames.add("floor");
-		filenames.add("checkeredFloor");
-		filenames.add("marbleFloor");
-		filenames.add("wall");
-		filenames.add("selectedWall");
+		if(selected == false){
+			filenames.add("floor");
+			filenames.add("checkeredFloor");
+			filenames.add("marbleFloor");
+			filenames.add("wall");
+		}
+		else{
+			filenames.add("selectedWall");
+		}
 		
 		return filenames;
 	}
 	
-	private void readImages(){
-		ArrayList<String> filenames = addToFilenames();
+	private void readImages(boolean selected){
+		ArrayList<String> filenames = addToFilenames(selected);
 		
 		for(String s : filenames){
 			try {
-				BufferedImage image = ImageIO.read(getClass().getResource("assets/" + (String) s + ".png"));
-				images.put(s, image);
-				scaledImages.put(s, getScaledImage(image, zoom, zoom/2)) ;
+				BufferedImage image = null;
+				if(selected == false){
+					image = ImageIO.read(getClass().getResource("assets/deselected/" + (String) s + ".png"));
+					images.put(s, image);
+					scaledImages.put(s, getScaledImage(image, zoom, zoom/2)) ;
+				}
+				else{
+					image = ImageIO.read(getClass().getResource("assets/selected/" + (String) s + ".png"));
+					selectedImages.put(images.get(s), image);
+					selectedScaledImages.put(s, getScaledImage(image, zoom, zoom/2)) ;
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -188,6 +203,10 @@ public class GameCanvas extends JPanel {
 	
 	public HashMap<String, BufferedImage> getImages(){
 		return this.images;
+	}
+	
+	public HashMap<BufferedImage, BufferedImage> getSelectedImages(){
+		return this.selectedImages;
 	}
 	
 	public void setTranslateX(int x){

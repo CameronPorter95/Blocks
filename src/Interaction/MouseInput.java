@@ -7,6 +7,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 import javax.swing.SwingUtilities;
 import view.GameCanvas;
 import view.SideBar;
@@ -113,6 +117,17 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 	
 	public void mousePressed(MouseEvent e) {
 		if(onSideBar == true){
+			for (Iterator<Entry<Point, BufferedImage>> iterator = sideBar.getImageLocations().entrySet().iterator(); iterator.hasNext();) {
+				Entry<Point, BufferedImage> entry = iterator.next();
+				Point point = entry.getKey();
+				BufferedImage image = entry.getValue();
+				if(e.getPoint().getX() < point.getX() + image.getWidth()
+					&& e.getPoint().getX() > point.getX()
+					&& e.getPoint().getY() < point.getY() + image.getHeight()
+					&& e.getPoint().getY() > point.getY()){
+					
+				}
+			}
 			return;
 		}
 		if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown()) {
