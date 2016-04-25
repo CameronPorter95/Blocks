@@ -79,6 +79,7 @@ public class GameCanvas extends JPanel {
 		filenames.add("checkeredFloor");
 		filenames.add("marbleFloor");
 		filenames.add("wall");
+		filenames.add("selectedWall");
 		
 		return filenames;
 	}

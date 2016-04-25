@@ -32,6 +32,7 @@ public class SideBar extends JPanel{
 		this.setBackground(Color.BLACK);
 		this.setSize((int) frameSize.getWidth()/15, (int) (frameSize.getHeight()/1.25));
 		this.setLocation(-this.getWidth(), 0);
+		scaleImages();
 	}
 		
 	
@@ -42,14 +43,17 @@ public class SideBar extends JPanel{
 	}
 	
 	private void addComponentsToPane(Graphics g) {
-        scaleImages();
-        g.drawImage(scaledImages.get("marbleFloor"), this.getWidth()/3, this.getHeight()/2, getParent());
+        g.drawImage(scaledImages.get("wall"), this.getWidth()/3, this.getHeight()/2, getParent());
 	}
 	
-	private void scaleImages(){
+	public void scaleImages(){
 		for (Iterator<Entry<String, BufferedImage>> iterator = canvas.getImages().entrySet().iterator(); iterator.hasNext();) {
 			Entry<String, BufferedImage> entry = iterator.next();
-			scaledImages.put(entry.getKey(), getScaledImage(entry.getValue(), this.getWidth()/2, this.getWidth()/4));
+			BufferedImage image = entry.getValue();
+			double scalingValue = (double) image.getHeight()/(double) image.getWidth();
+			if(scalingValue > 1){	//If image is a block and not a tile.
+				scaledImages.put(entry.getKey(), getScaledImage(image, this.getWidth()/2, (int) ((this.getWidth()/2)*scalingValue)));
+			}
 		}
 	}
 	

@@ -45,14 +45,14 @@ public class Frame extends JFrame implements ComponentListener{
 	@Override
 	public void componentResized(ComponentEvent arg0) {
 		if(this.sideBar != null){
+			sideBar.setSize(this.getWidth()/15, (int) (this.getHeight()/1.25));
 			if(this.sideBar.getExtended() == true){
-				sideBar.setSize(this.getWidth()/15, (int) (this.getHeight()/1.25));
 				sideBar.setLocation(0, (int) ((this.getContentPane().getHeight() - sideBar.getHeight())/2));
 			}
 			else{
-				sideBar.setSize(this.getWidth()/15, (int) (this.getHeight()/1.25));
 				sideBar.setLocation(-sideBar.getWidth(), 0);
 			}
+			sideBar.scaleImages();
 		}
 	}
 

@@ -8,20 +8,26 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.swing.SwingUtilities;
-
 import view.GameCanvas;
+import view.SideBar;
 
 public class MouseInput implements MouseWheelListener, MouseMotionListener, MouseListener {
 
 	private GameCanvas canvas;
+	private SideBar sideBar;
+	private boolean onSideBar = false;
 	private Point mouseLoc = null;
 	
-	public MouseInput(GameCanvas canvas){
+	public MouseInput(GameCanvas canvas, SideBar sideBar){
 		this.canvas = canvas;
+		this.sideBar = sideBar;
 	}
 	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
+		if(onSideBar == true){
+			return;
+		}
 		int mPosX = (int) e.getPoint().getX();
 		int mPosY = (int) e.getPoint().getY();
 		int pRangeX = mPosX - canvas.getTranslateX();
@@ -38,6 +44,9 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		if(onSideBar == true){
+			return;
+		}
 		if(!SwingUtilities.isRightMouseButton(e)) {
 			mouseLoc = null;
 		}
@@ -103,6 +112,9 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 	}
 	
 	public void mousePressed(MouseEvent e) {
+		if(onSideBar == true){
+			return;
+		}
 		if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown()) {
 			Point p = e.getPoint();
 			selectTile(p, true);
@@ -126,15 +138,18 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
+	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		if(e.getComponent() == sideBar){
+			onSideBar = true;
+		}
 	}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void mouseExited(MouseEvent e) {
+		if(e.getComponent() == sideBar){
+			onSideBar = false;
+		}
 	}
 	
 	private void selectTile(Point p, boolean deselect){
