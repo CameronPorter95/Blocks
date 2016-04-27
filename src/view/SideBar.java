@@ -19,6 +19,7 @@ import javax.swing.Timer;
 @SuppressWarnings("serial")
 public class SideBar extends JPanel{
 	
+	private GameCanvas canvas;
 	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();	//Unscaled blocks to be drawn on the panel.
 	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();	//Scaled blocks to be drawn on the panel.
 	private HashMap<Point, String> drawnImages = new HashMap<Point, String>();	//Names of blocks with positions to be drawn on the panel.
@@ -28,11 +29,12 @@ public class SideBar extends JPanel{
 	private boolean extended = false;
 
 	public SideBar(Dimension frameSize, GameCanvas canvas){
-		this.images = canvas.getUnselectedImages();
+		this.canvas = canvas;
 		this.location = (int) (-frameSize.getWidth()/15);
 		this.setBackground(Color.BLACK);
 		this.setSize((int) frameSize.getWidth()/15, (int) (frameSize.getHeight()/1.25));
 		this.setLocation(-this.getWidth(), 0);
+		addToImages();
 		scaleImages();
 		addToDrawnImages();
 	}
@@ -57,6 +59,18 @@ public class SideBar extends JPanel{
 		for(String s : scaledImages.keySet()){
 			drawnImages.put(new Point(xPos, yPos), s);
 			yPos = yPos + scaledImages.get(s).getHeight() + 20;
+		}
+	}
+	
+	private void addToImages(){
+		for (Iterator<Entry<String, BufferedImage>> iterator = canvas.getUnselectedImages().entrySet().iterator(); iterator.hasNext();) {
+			Entry<String, BufferedImage> entry = iterator.next();
+			String name = entry.getKey();
+			BufferedImage image = entry.getValue();
+			double scalingValue = (double) image.getHeight()/(double) image.getWidth();
+			if(scalingValue > 1){	//If image is a block and not a tile.
+				this.images.put(name, image);
+			}
 		}
 	}
 	
@@ -109,8 +123,10 @@ public class SideBar extends JPanel{
 		timer.start();
 	}
 	
-	public void selectBlock(String name, BufferedImage image, Point point){
+	public void selectBlock(String name, String oldName, BufferedImage image, Point point){
+		images.remove(oldName);
 		images.put(name, image);
+		scaledImages.remove(oldName);
 		double scalingValue = (double) image.getHeight()/(double) image.getWidth();
 		scaledImages.put(name, getScaledImage(image, this.getWidth()/2, (int) ((this.getWidth()/2)*scalingValue)));
 		drawnImages.put(point, name);

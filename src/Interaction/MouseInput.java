@@ -127,12 +127,12 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 					&& e.getPoint().getY() < point.getY() + image.getHeight()
 					&& e.getPoint().getY() > point.getY()){
 					if(name.contains("selected")){
-						name = name.substring(8);
-						sideBar.selectBlock(name, canvas.getImages().get(name), point);
+						String newName = name.substring(8);
+						sideBar.selectBlock(newName, name, canvas.getImages().get(newName), point);
 					}
 					else{
-						name = "selected" + name;
-						sideBar.selectBlock(name, canvas.getImages().get(name), point);
+						String newName = "selected" + name;
+						sideBar.selectBlock(newName, name, canvas.getImages().get(newName), point);
 					}
 				}
 			}
