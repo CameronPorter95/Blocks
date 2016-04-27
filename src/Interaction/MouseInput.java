@@ -52,6 +52,7 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		Point p = e.getPoint();
 		if(onSideBar == true){
 			return;
 		}
@@ -62,19 +63,27 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 			double dragAmountX = 0;
 			double dragAmountY = 0;
 			if(mouseLoc != null){
-				dragAmountX = e.getPoint().getX() - mouseLoc.getX();
-				dragAmountY = e.getPoint().getY() - mouseLoc.getY();
+				dragAmountX = p.getX() - mouseLoc.getX();
+				dragAmountY = p.getY() - mouseLoc.getY();
 			}
 			mouseLoc = e.getPoint();
 			canvas.moveWorld(dragAmountX, dragAmountY);
 		}
 		if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown()) {
-			Point p = e.getPoint();
 			selectTile(p, true, false);
 		}
 		else if (SwingUtilities.isLeftMouseButton(e)) {
-			Point p = e.getPoint();
-			selectTile(p, false, false);
+			if(sideBar.getSelectedBlockName() == null){
+				selectTile(p, false, false);
+			}
+			else{
+				Point pos = selectTile(p, false, true);
+				if(pos.getX() > 99 || pos.getY() > 99 || pos.getX() < 0 || pos.getY() < 0){
+					return;
+				}
+				database.placeBlock(sideBar.getSelectedBlockImage(), sideBar.getSelectedBlockName(), pos);
+				canvas.repaint();
+			}
 		}
 	}
 

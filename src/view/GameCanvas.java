@@ -51,10 +51,6 @@ public class GameCanvas extends JPanel {
         super.paintComponent(g);
         drawFloor(g);
         drawBlocks(g);
-        for(BufferedImage image : scaledImages.values()){
-        	 System.out.println(image.getWidth() + " " + image.getHeight());
-        }
-        System.out.println("\n");
 	}
 	
 	/*----------------------------Rendering Methods-------------------------------------*/
