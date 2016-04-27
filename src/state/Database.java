@@ -1,22 +1,46 @@
 package state;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
+
+import state.blocks.Block;
+import state.blocks.Wall;
 
 public class Database {
 	
-	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
+	Block[][] blocks;
+	int floorX, floorY;
 	
 	public Database(){
-		
-	}
-
-	public HashMap<String, BufferedImage> getImages() {
-		return images;
-	}
-
-	public void putImage(String s, BufferedImage image) {
-		this.images.put(s, image);
+		floorX = 100;
+		floorY = 100;
+		blocks = new Block[floorX][floorY];
 	}
 	
+	public void placeBlock(BufferedImage image, String name, Point position){
+		name = name.substring(8);
+		Block block;
+		switch(name){
+			case "wall": block = new Wall(image, name, position);
+						 break;
+			default: 	 block = null;
+						 break;
+        
+		}
+		if(block != null){
+			blocks[(int) block.getPosition().getX()][(int) block.getPosition().getY()] = block;
+		}
+	}
+	
+	public Block[][] getBlocks(){
+		return blocks;
+	}
+	
+	public int getFloorX(){
+		return floorX;
+	}
+	
+	public int getFloorY(){
+		return floorY;
+	}
 }

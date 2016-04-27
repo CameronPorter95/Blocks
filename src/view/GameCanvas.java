@@ -17,13 +17,15 @@ import java.util.Map.Entry;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import state.Database;
+import state.blocks.Block;
 
 @SuppressWarnings("serial")
 public class GameCanvas extends JPanel {
 	
-	//private Database database;
-	private int zoom = 200;
-	private int floorSize = 100; //Floor is a floorSizexfloorSize grid.
+	private Database database;
+	private int zoom = 140;
+	private int floorX;
+	private int floorY;
 	private int translateX, translateY = 0;
 	private HashSet<Point> selectedTiles = new HashSet<Point>();
 	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();	//All the images.
@@ -33,8 +35,10 @@ public class GameCanvas extends JPanel {
 	public GameCanvas(Dimension frameSize, Database database){
 		this.setBackground(Color.BLACK);
 		setSize(frameSize);
-		//this.database = database;
-		this.translateX = ((int) (this.getSize().getWidth() / 2)) - ((floorSize+1) * zoom/2);
+		this.database = database;
+		this.floorX = database.getFloorX();
+		this.floorY = database.getFloorY();
+		this.translateX = ((int) (this.getSize().getWidth() / 2)) - ((floorX+1) * zoom/2);
 		this.translateY = this.getHeight()/2;
 		readImages(false);
 		readImages(true);
@@ -46,13 +50,18 @@ public class GameCanvas extends JPanel {
 		Graphics2D g = (Graphics2D) graphics;
         super.paintComponent(g);
         drawFloor(g);
+        drawBlocks(g);
+        for(BufferedImage image : scaledImages.values()){
+        	 System.out.println(image.getWidth() + " " + image.getHeight());
+        }
+        System.out.println("\n");
 	}
 	
 	/*----------------------------Rendering Methods-------------------------------------*/
 	
 	private void drawFloor(Graphics2D g){
-		for (int i = floorSize; i > 0; i--){
-		    for (int j = 0; j < floorSize; j++){
+		for (int i = floorX-1; i >= 0; i--){
+		    for (int j = 0; j < floorY; j++){
 		    	Point point = new Point(i, j);
 		    	Point p = twoDToIso(point);
 		    	if(p.getX() < this.getWidth() && p.getX() > -this.zoom && p.getY() < this.getHeight() && p.getY() > -this.zoom/2){
@@ -62,6 +71,20 @@ public class GameCanvas extends JPanel {
 			    	else{
 				    	g.drawImage(scaledImages.get("floor"), p.x, p.y, getParent());
 			    	}
+		    	}
+		    }
+		}
+	}
+	
+	private void drawBlocks(Graphics2D g){
+		for (int i = floorX-1; i >= 0; i--){
+		    for (int j = 0; j <= floorY-1; j++){
+		    	if(database.getBlocks()[i][j] != null){
+		    		Point point = new Point(i, j);
+			    	Point p = twoDToIso(point);
+			    	Block block = database.getBlocks()[i][j];
+			    	BufferedImage image = scaledImages.get(block.getName());
+			    	g.drawImage(image, p.x, p.y - image.getHeight()+(zoom/2), getParent());
 		    	}
 		    }
 		}
@@ -100,12 +123,16 @@ public class GameCanvas extends JPanel {
 					image = ImageIO.read(getClass().getResource("assets/deselected/" + (String) s + ".png"));
 					images.put(s, image);
 					unselectedImages.put(s, image);
-					scaledImages.put(s, getScaledImage(image, zoom, zoom/2)) ;
+					double width = (image.getWidth()/64f)*(zoom/(double) image.getWidth())*image.getWidth();
+					double height = (image.getHeight()/32f)*((zoom /2f) / (double) image.getHeight())*image.getHeight();
+					scaledImages.put(s, getScaledImage(image, (int) width, (int) height));
 				}
 				else{
 					image = ImageIO.read(getClass().getResource("assets/selected/" + (String) s + ".png"));
 					images.put(s, image);
-					scaledImages.put(s, getScaledImage(image, zoom, zoom/2)) ;
+					double width = (image.getWidth()/64f)*(zoom/(double) image.getWidth())*image.getWidth();
+					double height = (image.getHeight()/32f)*((zoom /2f) / (double) image.getHeight())*image.getHeight();
+					scaledImages.put(s, getScaledImage(image, (int) width, (int) height));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -131,7 +158,10 @@ public class GameCanvas extends JPanel {
 			this.translateY = this.translateY - deltaTranslateY;
 			for (Iterator<Entry<String, BufferedImage>> iterator = images.entrySet().iterator(); iterator.hasNext();) {
 				Entry<String, BufferedImage> entry = iterator.next();
-				scaledImages.put(entry.getKey(), getScaledImage(entry.getValue(), zoom, zoom/2));
+				BufferedImage image = entry.getValue();
+				double width = (image.getWidth()/64f)*(zoom/(double) image.getWidth())*image.getWidth();
+				double height = (image.getHeight()/32f)*((zoom /2f) / (double) image.getHeight())*image.getHeight();
+				scaledImages.put(entry.getKey(), getScaledImage(image, (int) width, (int) height));
 			}
 			repaint();
 		}
@@ -144,7 +174,10 @@ public class GameCanvas extends JPanel {
 			this.translateY = this.translateY + deltaTranslateY;
 			for (Iterator<Entry<String, BufferedImage>> iterator = images.entrySet().iterator(); iterator.hasNext();) {
 				Entry<String, BufferedImage> entry = iterator.next();
-				scaledImages.put(entry.getKey(), getScaledImage(entry.getValue(), zoom, zoom/2));
+				BufferedImage image = entry.getValue();
+				double width = (image.getWidth()/64f)*(zoom/(double) image.getWidth())*image.getWidth();
+				double height = (image.getHeight()/32f)*((zoom /2f) / (double) image.getHeight())*image.getHeight();
+				scaledImages.put(entry.getKey(), getScaledImage(image, (int) width, (int) height));
 			}
 			repaint();
 		}
@@ -193,8 +226,12 @@ public class GameCanvas extends JPanel {
 		return this.translateY;
 	}
 	
-	public int getFloorSize(){
-		return floorSize;
+	public int getFloorX(){
+		return floorX;
+	}
+	
+	public int getFloorY(){
+		return floorY;
 	}
 	
 	public int getZoom(){

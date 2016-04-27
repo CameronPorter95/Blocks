@@ -46,7 +46,7 @@ public class KeyboardInput extends AbstractAction{
 			canvas.clearSelectedTiles();
 		}
 		else if(action.equals("space")){
-			canvas.setTranslateX(((int) (canvas.getWidth() / 2)) - ((canvas.getFloorSize()+1) * canvas.getZoom()/2));
+			canvas.setTranslateX(((int) (canvas.getWidth() / 2)) - ((canvas.getFloorX()+1) * canvas.getZoom()/2));
 			canvas.setTranslateY(canvas.getHeight()/2);
 			canvas.repaint();
 		}

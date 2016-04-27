@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import javax.swing.SwingUtilities;
+
+import state.Database;
 import view.GameCanvas;
 import view.SideBar;
 
@@ -19,12 +21,14 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 
 	private GameCanvas canvas;
 	private SideBar sideBar;
+	private Database database;
 	private boolean onSideBar = false;
 	private Point mouseLoc = null;
 	
-	public MouseInput(GameCanvas canvas, SideBar sideBar){
+	public MouseInput(GameCanvas canvas, SideBar sideBar, Database database){
 		this.canvas = canvas;
 		this.sideBar = sideBar;
+		this.database = database;
 	}
 	
 	@Override
@@ -66,11 +70,11 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 		}
 		if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown()) {
 			Point p = e.getPoint();
-			selectTile(p, true);
+			selectTile(p, true, false);
 		}
 		else if (SwingUtilities.isLeftMouseButton(e)) {
 			Point p = e.getPoint();
-			selectTile(p, false);
+			selectTile(p, false, false);
 		}
 	}
 
@@ -116,16 +120,15 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 	}
 	
 	public void mousePressed(MouseEvent e) {
+		Point p = e.getPoint();
 		if(onSideBar == true){
 			for (Iterator<Entry<Point, String>> iterator = sideBar.getDrawnImages().entrySet().iterator(); iterator.hasNext();) {
 				Entry<Point, String> entry = iterator.next();
 				Point point = entry.getKey();
 				String name = entry.getValue();
 				BufferedImage image = sideBar.getScaledImages().get(name);
-				if(e.getPoint().getX() < point.getX() + image.getWidth()
-					&& e.getPoint().getX() > point.getX()
-					&& e.getPoint().getY() < point.getY() + image.getHeight()
-					&& e.getPoint().getY() > point.getY()){
+				if(p.getX() < point.getX() + image.getWidth() && p.getX() > point.getX()
+					&& p.getY() < point.getY() + image.getHeight() && p.getY() > point.getY()){
 					if(name.contains("selected")){
 						String newName = name.substring(8);
 						sideBar.selectBlock(newName, name, canvas.getImages().get(newName), point);
@@ -139,12 +142,20 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 			return;
 		}
 		if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown()) {
-			Point p = e.getPoint();
-			selectTile(p, true);
+			selectTile(p, true, false);
 		}
 		else if (SwingUtilities.isLeftMouseButton(e)) {
-			Point p = e.getPoint();
-			selectTile(p, false);
+			if(sideBar.getSelectedBlockName() == null){
+				selectTile(p, false, false);
+			}
+			else{
+				Point pos = selectTile(p, false, true);
+				if(pos.getX() > 99 || pos.getY() > 99 || pos.getX() < 0 || pos.getY() < 0){
+					return;
+				}
+				database.placeBlock(sideBar.getSelectedBlockImage(), sideBar.getSelectedBlockName(), pos);
+				canvas.repaint();
+			}
 		}
 	}
 	
@@ -175,21 +186,28 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 		}
 	}
 	
-	private void selectTile(Point p, boolean deselect){
+	private Point selectTile(Point p, boolean deselect, boolean placeBlock){
 		double diffY = p.getY() - canvas.getTranslateY();
-		double diffX = p.getX() - (canvas.getTranslateX() + (((canvas.getFloorSize()+1) * canvas.getZoom())/2));
+		double diffX = p.getX() - (canvas.getTranslateX() + (((canvas.getFloorX()+1) * canvas.getZoom())/2));
 		
 		int totalDiffX = (int) Math.ceil((diffX/canvas.getZoom()) - (diffY/(canvas.getZoom()/2)));
 		int totalDiffY = (int) Math.ceil((diffX/canvas.getZoom()) + (diffY/(canvas.getZoom()/2)));
 		
-		int xCoord = (canvas.getFloorSize()/2) + totalDiffX;
-		int yCoord = (canvas.getFloorSize()/2) + totalDiffY - 1;
+		int xCoord = (canvas.getFloorX()/2) + totalDiffX;
+		int yCoord = (canvas.getFloorY()/(2*canvas.getFloorY()/canvas.getFloorX())) + totalDiffY - 1;
 		
-		if(deselect){
-			canvas.deselectTile(xCoord, yCoord);
-			return;
+		if(placeBlock){
+			Point tile = new Point(xCoord, yCoord);
+			return tile;
 		}
-		canvas.selectTile(xCoord, yCoord);
+		else{
+			if(deselect){
+				canvas.deselectTile(xCoord, yCoord);
+				return null;
+			}
+			canvas.selectTile(xCoord, yCoord);
+			return null;
+		}
 	}
 	
 	private void moveWorld(int x, int y) {

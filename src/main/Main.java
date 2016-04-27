@@ -29,7 +29,7 @@ public class Main {
 		frame = new Frame();
 		canvas = new GameCanvas(frame.getSize(), database);
 		sideBar = new SideBar(frame.getSize(), canvas);
-		MouseInput mouseInput = new MouseInput(canvas, sideBar);
+		MouseInput mouseInput = new MouseInput(canvas, sideBar, database);
 		canvas.addMouseListener(mouseInput);
 		sideBar.addMouseListener(mouseInput);
         canvas.addMouseWheelListener(mouseInput);

@@ -20,6 +20,8 @@ import javax.swing.Timer;
 public class SideBar extends JPanel{
 	
 	private GameCanvas canvas;
+	private BufferedImage selectedBlockImage = null;
+	private String selectedBlockName = null;
 	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();	//Unscaled blocks to be drawn on the panel.
 	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();	//Scaled blocks to be drawn on the panel.
 	private HashMap<Point, String> drawnImages = new HashMap<Point, String>();	//Names of blocks with positions to be drawn on the panel.
@@ -124,6 +126,14 @@ public class SideBar extends JPanel{
 	}
 	
 	public void selectBlock(String name, String oldName, BufferedImage image, Point point){
+		if(name.contains("selected")){
+			this.selectedBlockImage = image;
+			this.selectedBlockName = name;
+		}
+		else{
+			this.selectedBlockImage = null;
+			this.selectedBlockName = null;
+		}
 		images.remove(oldName);
 		images.put(name, image);
 		scaledImages.remove(oldName);
@@ -131,6 +141,14 @@ public class SideBar extends JPanel{
 		scaledImages.put(name, getScaledImage(image, this.getWidth()/2, (int) ((this.getWidth()/2)*scalingValue)));
 		drawnImages.put(point, name);
 		repaint();
+	}
+	
+	public BufferedImage getSelectedBlockImage(){
+		return selectedBlockImage;
+	}
+	
+	public String getSelectedBlockName(){
+		return selectedBlockName;
 	}
 	
 	public boolean getExtended(){
