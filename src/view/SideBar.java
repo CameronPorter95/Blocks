@@ -19,23 +19,22 @@ import javax.swing.Timer;
 @SuppressWarnings("serial")
 public class SideBar extends JPanel{
 	
-	private GameCanvas canvas;
-	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();
-	private HashMap<String, BufferedImage> selectedScaledImages = new HashMap<String, BufferedImage>();
-	private HashMap<Point, String> imageLocations = new HashMap<Point, String>();
+	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();	//Unscaled blocks to be drawn on the panel.
+	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();	//Scaled blocks to be drawn on the panel.
+	private HashMap<Point, String> drawnImages = new HashMap<Point, String>();	//Names of blocks with positions to be drawn on the panel.
 	private Timer timer;
 	private int yPos = this.getY() + 10;
 	private int location;
 	private boolean extended = false;
 
 	public SideBar(Dimension frameSize, GameCanvas canvas){
-		this.canvas = canvas;
+		this.images = canvas.getUnselectedImages();
 		this.location = (int) (-frameSize.getWidth()/15);
 		this.setBackground(Color.BLACK);
 		this.setSize((int) frameSize.getWidth()/15, (int) (frameSize.getHeight()/1.25));
 		this.setLocation(-this.getWidth(), 0);
 		scaleImages();
-		addToImageLocations();
+		addToDrawnImages();
 	}
 		
 	
@@ -46,24 +45,23 @@ public class SideBar extends JPanel{
 	}
 	
 	private void addComponentsToPane(Graphics g) {
-		//System.out.println(imageLocations.size());
-		for (Iterator<Entry<Point, String>> iterator = imageLocations.entrySet().iterator(); iterator.hasNext();) {
+		for (Iterator<Entry<Point, String>> iterator = drawnImages.entrySet().iterator(); iterator.hasNext();) {
 			Entry<Point, String> entry = iterator.next();
 			Point position = entry.getKey();
 			g.drawImage((Image) scaledImages.get(entry.getValue()), (int) position.getX(), (int) position.getY(), getParent());
 		}
 	}
 	
-	public void addToImageLocations(){
+	public void addToDrawnImages(){
 		int xPos = this.getWidth()/6;
-		for(String name : scaledImages.keySet()){
-			imageLocations.put(new Point(xPos, yPos), name);
-			yPos = yPos + scaledImages.get(name).getHeight() + 20;
+		for(String s : scaledImages.keySet()){
+			drawnImages.put(new Point(xPos, yPos), s);
+			yPos = yPos + scaledImages.get(s).getHeight() + 20;
 		}
 	}
 	
 	public void scaleImages(){
-		for (Iterator<Entry<String, BufferedImage>> iterator = canvas.getImages().entrySet().iterator(); iterator.hasNext();) {
+		for (Iterator<Entry<String, BufferedImage>> iterator = images.entrySet().iterator(); iterator.hasNext();) {
 			Entry<String, BufferedImage> entry = iterator.next();
 			BufferedImage image = entry.getValue();
 			double scalingValue = (double) image.getHeight()/(double) image.getWidth();
@@ -111,8 +109,11 @@ public class SideBar extends JPanel{
 		timer.start();
 	}
 	
-	public void selectBlock(Point point, String name){
-		imageLocations.put(point, name);
+	public void selectBlock(String name, BufferedImage image, Point point){
+		images.put(name, image);
+		double scalingValue = (double) image.getHeight()/(double) image.getWidth();
+		scaledImages.put(name, getScaledImage(image, this.getWidth()/2, (int) ((this.getWidth()/2)*scalingValue)));
+		drawnImages.put(point, name);
 		repaint();
 	}
 	
@@ -120,8 +121,8 @@ public class SideBar extends JPanel{
 		return extended;
 	}
 	
-	public HashMap<Point, String> getImageLocations(){
-		return this.imageLocations;
+	public HashMap<Point, String> getDrawnImages(){
+		return this.drawnImages;
 	}
 	
 	public HashMap<String, BufferedImage> getScaledImages(){

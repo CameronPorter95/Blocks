@@ -26,10 +26,9 @@ public class GameCanvas extends JPanel {
 	private int floorSize = 100; //Floor is a floorSizexfloorSize grid.
 	private int translateX, translateY = 0;
 	private HashSet<Point> selectedTiles = new HashSet<Point>();
-	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
-	private HashMap<String, BufferedImage> selectedImages = new HashMap<String, BufferedImage>(); //Maps the selected with the non-selected.
-	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();
-	private HashMap<String, BufferedImage> selectedScaledImages = new HashMap<String, BufferedImage>();
+	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();	//All the images.
+	private HashMap<String, BufferedImage> unselectedImages = new HashMap<String, BufferedImage>();	//Only the unselectedImages.
+	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();	//All the images, scaled for the board.
 
 	public GameCanvas(Dimension frameSize, Database database){
 		this.setBackground(Color.BLACK);
@@ -85,7 +84,7 @@ public class GameCanvas extends JPanel {
 			filenames.add("wall");
 		}
 		else{
-			filenames.add("selectedWall");
+			filenames.add("selectedwall");
 		}
 		
 		return filenames;
@@ -100,12 +99,13 @@ public class GameCanvas extends JPanel {
 				if(selected == false){
 					image = ImageIO.read(getClass().getResource("assets/deselected/" + (String) s + ".png"));
 					images.put(s, image);
+					unselectedImages.put(s, image);
 					scaledImages.put(s, getScaledImage(image, zoom, zoom/2)) ;
 				}
 				else{
 					image = ImageIO.read(getClass().getResource("assets/selected/" + (String) s + ".png"));
-					selectedImages.put(s, image);
-					selectedScaledImages.put(s, getScaledImage(image, zoom, zoom/2)) ;
+					images.put(s, image);
+					scaledImages.put(s, getScaledImage(image, zoom, zoom/2)) ;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -205,8 +205,8 @@ public class GameCanvas extends JPanel {
 		return this.images;
 	}
 	
-	public HashMap<String, BufferedImage> getSelectedImages(){
-		return this.selectedImages;
+	public HashMap<String, BufferedImage> getUnselectedImages(){
+		return this.unselectedImages;
 	}
 	
 	public void setTranslateX(int x){

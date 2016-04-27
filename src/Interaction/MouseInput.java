@@ -117,15 +117,23 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 	
 	public void mousePressed(MouseEvent e) {
 		if(onSideBar == true){
-			for (Iterator<Entry<Point, String>> iterator = sideBar.getImageLocations().entrySet().iterator(); iterator.hasNext();) {
+			for (Iterator<Entry<Point, String>> iterator = sideBar.getDrawnImages().entrySet().iterator(); iterator.hasNext();) {
 				Entry<Point, String> entry = iterator.next();
 				Point point = entry.getKey();
-				BufferedImage image = sideBar.getScaledImages().get(entry.getValue());
+				String name = entry.getValue();
+				BufferedImage image = sideBar.getScaledImages().get(name);
 				if(e.getPoint().getX() < point.getX() + image.getWidth()
 					&& e.getPoint().getX() > point.getX()
 					&& e.getPoint().getY() < point.getY() + image.getHeight()
 					&& e.getPoint().getY() > point.getY()){
-					sideBar.selectBlock(point, entry.getValue());
+					if(name.contains("selected")){
+						name = name.substring(8);
+						sideBar.selectBlock(name, canvas.getImages().get(name), point);
+					}
+					else{
+						name = "selected" + name;
+						sideBar.selectBlock(name, canvas.getImages().get(name), point);
+					}
 				}
 			}
 			return;
