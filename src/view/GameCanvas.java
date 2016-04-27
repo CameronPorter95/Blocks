@@ -27,7 +27,7 @@ public class GameCanvas extends JPanel {
 	private int translateX, translateY = 0;
 	private HashSet<Point> selectedTiles = new HashSet<Point>();
 	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
-	private HashMap<BufferedImage, BufferedImage> selectedImages = new HashMap<BufferedImage, BufferedImage>(); //Maps the selected with the non-selected.
+	private HashMap<String, BufferedImage> selectedImages = new HashMap<String, BufferedImage>(); //Maps the selected with the non-selected.
 	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();
 	private HashMap<String, BufferedImage> selectedScaledImages = new HashMap<String, BufferedImage>();
 
@@ -104,7 +104,7 @@ public class GameCanvas extends JPanel {
 				}
 				else{
 					image = ImageIO.read(getClass().getResource("assets/selected/" + (String) s + ".png"));
-					selectedImages.put(images.get(s), image);
+					selectedImages.put(s, image);
 					selectedScaledImages.put(s, getScaledImage(image, zoom, zoom/2)) ;
 				}
 			} catch (IOException e) {
@@ -205,7 +205,7 @@ public class GameCanvas extends JPanel {
 		return this.images;
 	}
 	
-	public HashMap<BufferedImage, BufferedImage> getSelectedImages(){
+	public HashMap<String, BufferedImage> getSelectedImages(){
 		return this.selectedImages;
 	}
 	

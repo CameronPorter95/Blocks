@@ -21,7 +21,8 @@ public class SideBar extends JPanel{
 	
 	private GameCanvas canvas;
 	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();
-	private HashMap<Point, BufferedImage> imageLocations = new HashMap<Point, BufferedImage>();
+	private HashMap<String, BufferedImage> selectedScaledImages = new HashMap<String, BufferedImage>();
+	private HashMap<Point, String> imageLocations = new HashMap<Point, String>();
 	private Timer timer;
 	private int yPos = this.getY() + 10;
 	private int location;
@@ -45,18 +46,19 @@ public class SideBar extends JPanel{
 	}
 	
 	private void addComponentsToPane(Graphics g) {
-		for (Iterator<Entry<Point, BufferedImage>> iterator = imageLocations.entrySet().iterator(); iterator.hasNext();) {
-			Entry<Point, BufferedImage> entry = iterator.next();
+		//System.out.println(imageLocations.size());
+		for (Iterator<Entry<Point, String>> iterator = imageLocations.entrySet().iterator(); iterator.hasNext();) {
+			Entry<Point, String> entry = iterator.next();
 			Point position = entry.getKey();
-			g.drawImage((Image) entry.getValue(), (int) position.getX(), (int) position.getY(), getParent());
+			g.drawImage((Image) scaledImages.get(entry.getValue()), (int) position.getX(), (int) position.getY(), getParent());
 		}
 	}
 	
 	public void addToImageLocations(){
 		int xPos = this.getWidth()/6;
-		for(BufferedImage image : scaledImages.values()){
-			imageLocations.put(new Point(xPos, yPos), image);
-			yPos = yPos + image.getHeight() + 20;
+		for(String name : scaledImages.keySet()){
+			imageLocations.put(new Point(xPos, yPos), name);
+			yPos = yPos + scaledImages.get(name).getHeight() + 20;
 		}
 	}
 	
@@ -109,8 +111,8 @@ public class SideBar extends JPanel{
 		timer.start();
 	}
 	
-	public void selectBlock(Point point, BufferedImage image){
-		imageLocations.put(point, image);
+	public void selectBlock(Point point, String name){
+		imageLocations.put(point, name);
 		repaint();
 	}
 	
@@ -118,8 +120,12 @@ public class SideBar extends JPanel{
 		return extended;
 	}
 	
-	public HashMap<Point, BufferedImage> getImageLocations(){
+	public HashMap<Point, String> getImageLocations(){
 		return this.imageLocations;
+	}
+	
+	public HashMap<String, BufferedImage> getScaledImages(){
+		return this.scaledImages;
 	}
 	
 	public void setExtended(boolean extended){
