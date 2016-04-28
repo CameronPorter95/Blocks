@@ -59,6 +59,7 @@ public class SideBar extends JPanel{
 	public void addToDrawnImages(){
 		int xPos = this.getWidth()/6;
 		for(String s : scaledImages.keySet()){
+			System.out.println(s);
 			drawnImages.put(new Point(xPos, yPos), s);
 			yPos = yPos + scaledImages.get(s).getHeight() + 20;
 		}
@@ -70,7 +71,7 @@ public class SideBar extends JPanel{
 			String name = entry.getKey();
 			BufferedImage image = entry.getValue();
 			double scalingValue = (double) image.getHeight()/(double) image.getWidth();
-			if(scalingValue > 1){	//If image is a block and not a tile.
+			if(scalingValue != 0.5){	//If image is a block and not a tile.
 				this.images.put(name, image);
 			}
 		}
@@ -81,9 +82,7 @@ public class SideBar extends JPanel{
 			Entry<String, BufferedImage> entry = iterator.next();
 			BufferedImage image = entry.getValue();
 			double scalingValue = (double) image.getHeight()/(double) image.getWidth();
-			if(scalingValue > 1){	//If image is a block and not a tile.
-				scaledImages.put(entry.getKey(), getScaledImage(image, this.getWidth()/2, (int) ((this.getWidth()/2)*scalingValue)));
-			}
+			scaledImages.put(entry.getKey(), getScaledImage(image, this.getWidth()/2, (int) ((this.getWidth()/2)*scalingValue)));
 		}
 	}
 	

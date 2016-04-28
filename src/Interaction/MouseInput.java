@@ -159,7 +159,7 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 			}
 			else{
 				Point pos = selectTile(p, false, true);
-				if(pos.getX() > 99 || pos.getY() > 99 || pos.getX() < 0 || pos.getY() < 0){
+				if(pos.getX() > database.getFloorX()-1 || pos.getY() > database.getFloorY()-1 || pos.getX() < 0 || pos.getY() < 0){
 					return;
 				}
 				database.placeBlock(sideBar.getSelectedBlockImage(), sideBar.getSelectedBlockName(), pos);

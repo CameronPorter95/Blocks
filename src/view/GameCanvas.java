@@ -62,7 +62,7 @@ public class GameCanvas extends JPanel {
 		    	Point p = twoDToIso(point);
 		    	if(p.getX() < this.getWidth() && p.getX() > -this.zoom && p.getY() < this.getHeight() && p.getY() > -this.zoom/2){
 		    		if(selectedTiles.contains(point)){
-				    	g.drawImage(scaledImages.get("marbleFloor"), p.x, p.y, getParent());
+				    	g.drawImage(scaledImages.get("marblefloor"), p.x, p.y, getParent());
 			    	}
 			    	else{
 				    	g.drawImage(scaledImages.get("floor"), p.x, p.y, getParent());
@@ -98,12 +98,14 @@ public class GameCanvas extends JPanel {
 		
 		if(selected == false){
 			filenames.add("floor");
-			filenames.add("checkeredFloor");
-			filenames.add("marbleFloor");
+			filenames.add("checkeredfloor");
+			filenames.add("marblefloor");
 			filenames.add("wall");
+			filenames.add("skinnywall");
 		}
 		else{
 			filenames.add("selectedwall");
+			filenames.add("selectedskinnywall");
 		}
 		
 		return filenames;
@@ -113,25 +115,43 @@ public class GameCanvas extends JPanel {
 		ArrayList<String> filenames = addToFilenames(selected);
 		
 		for(String s : filenames){
-			try {
-				BufferedImage image = null;
-				if(selected == false){
-					image = ImageIO.read(getClass().getResource("assets/deselected/" + (String) s + ".png"));
-					images.put(s, image);
-					unselectedImages.put(s, image);
-					double width = (image.getWidth()/64f)*(zoom/(double) image.getWidth())*image.getWidth();
-					double height = (image.getHeight()/32f)*((zoom /2f) / (double) image.getHeight())*image.getHeight();
-					scaledImages.put(s, getScaledImage(image, (int) width, (int) height));
+			for(int i = 0; i < 4; i++){	//four directions on the board.
+				String name = s;
+				if(!s.contains("floor")){
+					switch(i){
+						case 0: name = name.concat("east");
+						break;
+						case 1: name = name.concat("north");
+						break;
+						case 2: name = name.concat("south");
+						break;
+						case 3: name = name.concat("west");
+						break;
+					}
 				}
 				else{
-					image = ImageIO.read(getClass().getResource("assets/selected/" + (String) s + ".png"));
-					images.put(s, image);
-					double width = (image.getWidth()/64f)*(zoom/(double) image.getWidth())*image.getWidth();
-					double height = (image.getHeight()/32f)*((zoom /2f) / (double) image.getHeight())*image.getHeight();
-					scaledImages.put(s, getScaledImage(image, (int) width, (int) height));
+					i = 3;
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
+				try {
+					BufferedImage image = null;
+					if(selected == false){
+						image = ImageIO.read(getClass().getResource("assets/deselected/" + (String) name + ".png"));
+						images.put(name, image);
+						unselectedImages.put(name, image);
+						double width = (image.getWidth()/64f)*(zoom/(double) image.getWidth())*image.getWidth();
+						double height = (image.getHeight()/32f)*((zoom /2f) / (double) image.getHeight())*image.getHeight();
+						scaledImages.put(name, getScaledImage(image, (int) width, (int) height));
+					}
+					else{
+						image = ImageIO.read(getClass().getResource("assets/selected/" + (String) name + ".png"));
+						images.put(name, image);
+						double width = (image.getWidth()/64f)*(zoom/(double) image.getWidth())*image.getWidth();
+						double height = (image.getHeight()/32f)*((zoom /2f) / (double) image.getHeight())*image.getHeight();
+						scaledImages.put(name, getScaledImage(image, (int) width, (int) height));
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

@@ -19,14 +19,31 @@ public class Database {
 	
 	public void placeBlock(BufferedImage image, String name, Point position){
 		name = name.substring(8);
-		Block block;
-		switch(name){
-			case "wall": block = new Wall(image, name, position);
-						 break;
-			default: 	 block = null;
-						 break;
-        
+		String direction = null;
+		Block block = null;
+		if(name.contains("east")){
+			name = name.substring(0, name.length()-4);
+			direction = "east";
 		}
+		else if(name.contains("north")){
+			name = name.substring(0, name.length()-5);
+			direction = "north";
+		}
+		else if(name.contains("south")){
+			name = name.substring(0, name.length()-5);
+			direction = "south";
+		}
+		else if(name.contains("west")){
+			name = name.substring(0, name.length()-4);
+			direction = "west";
+		}
+		
+		switch(name){
+			case "wall":		block = new Wall(image, name + direction, position);
+					 			break;
+			case "skinnywall":	block = new Wall(image, name + direction, position);
+								break;
+       	}
 		if(block != null){
 			blocks[(int) block.getPosition().getX()][(int) block.getPosition().getY()] = block;
 		}
