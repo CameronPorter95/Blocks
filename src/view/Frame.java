@@ -3,6 +3,7 @@ package view;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+
 import javax.swing.JFrame;
 
 @SuppressWarnings("serial")
@@ -55,6 +56,8 @@ public class Frame extends JFrame implements ComponentListener{
 			sideBar.scaleImages();
 			sideBar.getDrawnImages().clear();
 			sideBar.setYPos(10);
+			sideBar.getScaledUIElements().clear();
+			sideBar.setUIElementValues();
 			sideBar.addToDrawnImages();
 		}
 	}
