@@ -10,9 +10,13 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -25,6 +29,8 @@ public class SideBar extends JPanel{
 	private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();	//Unscaled blocks to be drawn on the panel.
 	private HashMap<String, BufferedImage> scaledImages = new HashMap<String, BufferedImage>();	//Scaled blocks to be drawn on the panel.
 	private HashMap<Point, String> drawnImages = new HashMap<Point, String>();	//Names of blocks with positions to be drawn on the panel.
+	private HashMap<String, BufferedImage> UIElements = new HashMap<String, BufferedImage>();
+	private HashMap<Point, String> UIElementsScaled = new HashMap<Point, String>();
 	private Timer timer;
 	private int yPos = this.getY() + 10;
 	private int location;
@@ -59,10 +65,16 @@ public class SideBar extends JPanel{
 	public void addToDrawnImages(){
 		int xPos = this.getWidth()/6;
 		for(String s : scaledImages.keySet()){
-			System.out.println(s);
 			drawnImages.put(new Point(xPos, yPos), s);
 			yPos = yPos + scaledImages.get(s).getHeight() + 20;
 		}
+	}
+	
+	private ArrayList<String> addToUIFilenames(){
+		ArrayList<String> filenames = new ArrayList<String>();
+		filenames.add("PanelScroll");
+		
+		return filenames;
 	}
 	
 	private void addToImages(){
@@ -74,6 +86,18 @@ public class SideBar extends JPanel{
 			if(scalingValue != 0.5){	//If image is a block and not a tile.
 				this.images.put(name, image);
 			}
+		}
+		
+		ArrayList<String> filenames = addToUIFilenames();
+		for(String s : filenames){
+			BufferedImage image = null;
+			try {
+				image = ImageIO.read(getClass().getResource("assets/UI/" + (String) s + ".png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			UIElements.put(s, image);
 		}
 	}
 	
