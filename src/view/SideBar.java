@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +17,8 @@ import java.util.Map.Entry;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import customCollections.AssetTuple;
+import customCollections.DoublePoint;
 
 @SuppressWarnings("serial")
 public class SideBar extends JPanel{
@@ -27,9 +28,8 @@ public class SideBar extends JPanel{
 	private String selectedBlockName = null;
 	private HashMap<String, BufferedImage> blocks = new HashMap<String, BufferedImage>();	//Unscaled blocks to be drawn on the panel.
 	private HashMap<String, BufferedImage> scaledBlocks = new HashMap<String, BufferedImage>();	//Scaled blocks to be drawn on the panel.
-	private HashMap<Point, String> drawnBlocks = new HashMap<Point, String>();	//Names of blocks with positions to be drawn on the panel.
-	private HashMap<String, BufferedImage> UIElements = new HashMap<String, BufferedImage>();
-	private HashMap<Point, BufferedImage> UIElementsScaled = new HashMap<Point, BufferedImage>();
+	private HashMap<DoublePoint, String> drawnBlocks = new HashMap<DoublePoint, String>();	//Names of blocks with positions to be drawn on the panel.
+	private ArrayList<AssetTuple> UIElements = new ArrayList<AssetTuple>();
 	private Timer timer;
 	private int yPos = this.getY() + 10;
 	private int location;
@@ -43,7 +43,7 @@ public class SideBar extends JPanel{
 		this.setLocation(-this.getWidth(), 0);
 		addToImages();
 		scaleImages();
-		setUIElementValues();
+		setUIElementPositions();
 		addToDrawnImages();
 	}
 		
@@ -55,22 +55,21 @@ public class SideBar extends JPanel{
 	}
 	
 	private void addComponentsToPane(Graphics g) {
-		for (Iterator<Entry<Point, String>> iterator = drawnBlocks.entrySet().iterator(); iterator.hasNext();) {
-			Entry<Point, String> entry = iterator.next();
-			Point position = entry.getKey();
+		for (Iterator<Entry<DoublePoint, String>> iterator = drawnBlocks.entrySet().iterator(); iterator.hasNext();) {
+			Entry<DoublePoint, String> entry = iterator.next();
+			DoublePoint position = entry.getKey();
 			g.drawImage((Image) scaledBlocks.get(entry.getValue()), (int) position.getX(), (int) position.getY(), getParent());
 		}
-		for (Iterator<Entry<Point, BufferedImage>> uiIterator = UIElementsScaled.entrySet().iterator(); uiIterator.hasNext();) {
-			Entry<Point, BufferedImage> entry = uiIterator.next();
-			Point position = entry.getKey();
-			g.drawImage(entry.getValue(), (int) position.getX(), (int) position.getY(), getParent());
+		for(AssetTuple tuple : UIElements){
+			DoublePoint position = tuple.getPosition();
+			g.drawImage(tuple.getScaled(), (int) position.getX(), (int) position.getY(), getParent());
 		}
 	}
 	
 	public void addToDrawnImages(){
 		int xPos = this.getWidth()/6;
 		for(String s : scaledBlocks.keySet()){
-			drawnBlocks.put(new Point(xPos, yPos), s);
+			drawnBlocks.put(new DoublePoint(xPos, yPos), s);
 			yPos = yPos + scaledBlocks.get(s).getHeight() + 20;
 		}
 	}
@@ -102,7 +101,7 @@ public class SideBar extends JPanel{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			UIElements.put(s, image);
+			UIElements.add(new AssetTuple(s, new DoublePoint(0,0), image));
 		}
 	}
 	
@@ -153,7 +152,7 @@ public class SideBar extends JPanel{
 		timer.start();
 	}
 	
-	public void selectBlock(String name, String oldName, BufferedImage image, Point point){
+	public void selectBlock(String name, String oldName, BufferedImage image, DoublePoint point){
 		if(name.contains("selected")){
 			this.selectedBlockImage = image;
 			this.selectedBlockName = name;
@@ -171,6 +170,41 @@ public class SideBar extends JPanel{
 		repaint();
 	}
 	
+	void scaleUIElementValues(double oldWidth, double oldHeight, double currentWidth, double currentHeight){
+		for(int i = 0; i < UIElements.size(); i++){
+			AssetTuple tuple = UIElements.get(i);
+			DoublePoint pos = tuple.getPosition();
+			double newPosX = (((double) pos.getX())/oldWidth)*currentWidth;
+			System.out.println(oldWidth + " - " + currentWidth);
+			double newPosY = (pos.getY()/oldHeight)*currentHeight;
+			BufferedImage image = tuple.getImage();
+			double scalingValue = (double) image.getHeight()/(double) image.getWidth();
+			tuple.setScaled(getScaledImage(image, this.getWidth()/2, (int) ((this.getWidth()/2)*scalingValue)));
+			tuple.setPosition(new DoublePoint((int) newPosX, (int) newPosY));
+		}
+	}
+	
+	private void setUIElementPositions(){
+		for(int i = 0; i < UIElements.size(); i++){
+			AssetTuple tuple = UIElements.get(i);
+			switch(tuple.getName()){
+			case "PanelScroll":		
+				tuple.setPosition(new DoublePoint((int) (this.getWidth()/1.1), 0));
+				System.out.println("Start pos: " + tuple.getPosition());
+				break;
+			}
+			
+			if(tuple.getPosition() != null){
+				BufferedImage image = UIElements.get(i).getImage();
+				double scalingValue = (double) image.getHeight()/(double) image.getWidth();
+				tuple.setScaled(getScaledImage(image, this.getWidth()/2, (int) ((this.getWidth()/2)*scalingValue)));
+			}
+			else{
+				throw new NullPointerException("Position of UI Element is null");
+			}
+		}
+	}
+	
 	public BufferedImage getSelectedBlockImage(){
 		return selectedBlockImage;
 	}
@@ -183,7 +217,7 @@ public class SideBar extends JPanel{
 		return extended;
 	}
 	
-	public HashMap<Point, String> getDrawnImages(){
+	public HashMap<DoublePoint, String> getDrawnImages(){
 		return this.drawnBlocks;
 	}
 	
@@ -191,8 +225,8 @@ public class SideBar extends JPanel{
 		return this.scaledBlocks;
 	}
 	
-	public HashMap<Point, BufferedImage> getScaledUIElements(){
-		return this.UIElementsScaled;
+	public ArrayList<AssetTuple> getUIElements(){
+		return this.UIElements;
 	}
 	
 	public void setExtended(boolean extended){
@@ -201,27 +235,5 @@ public class SideBar extends JPanel{
 	
 	public void setYPos(int yPos){
 		this.yPos = yPos;
-	}
-	
-	//----------------------Helper Methods--------------------------------
-	
-	void setUIElementValues(){
-		for(String name : UIElements.keySet()){
-			Point pos = null;
-			switch(name){
-			case "PanelScroll":		
-				pos = new Point((int) (this.getWidth()/1.1), 0);
-				break;
-			}
-			
-			if(pos != null){
-				BufferedImage image = UIElements.get(name);
-				double scalingValue = (double) image.getHeight()/(double) image.getWidth();
-				UIElementsScaled.put(pos, getScaledImage(image, this.getWidth()/2, (int) ((this.getWidth()/2)*scalingValue)));
-			}
-			else{
-				throw new NullPointerException("Position of UI Element is null");
-			}
-		}
 	}
 }

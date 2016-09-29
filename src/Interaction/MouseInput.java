@@ -10,12 +10,11 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.Map.Entry;
-
 import javax.swing.SwingUtilities;
-
 import state.Database;
 import view.GameCanvas;
 import view.SideBar;
+import customCollections.DoublePoint;
 
 public class MouseInput implements MouseWheelListener, MouseMotionListener, MouseListener {
 
@@ -131,9 +130,9 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 	public void mousePressed(MouseEvent e) {
 		Point p = e.getPoint();
 		if(onSideBar == true){
-			for (Iterator<Entry<Point, String>> iterator = sideBar.getDrawnImages().entrySet().iterator(); iterator.hasNext();) {
-				Entry<Point, String> entry = iterator.next();
-				Point point = entry.getKey();
+			for (Iterator<Entry<DoublePoint, String>> iterator = sideBar.getDrawnImages().entrySet().iterator(); iterator.hasNext();) {
+				Entry<DoublePoint, String> entry = iterator.next();
+				DoublePoint point = entry.getKey();
 				String name = entry.getValue();
 				BufferedImage image = sideBar.getScaledImages().get(name);
 				if(p.getX() < point.getX() + image.getWidth() && p.getX() > point.getX()
@@ -144,8 +143,8 @@ public class MouseInput implements MouseWheelListener, MouseMotionListener, Mous
 					}
 					else{
 						if(sideBar.getSelectedBlockName() != null){
-							for(Entry<Point, String> entry2 : sideBar.getDrawnImages().entrySet()){
-								Point point2 = entry2.getKey();
+							for(Entry<DoublePoint, String> entry2 : sideBar.getDrawnImages().entrySet()){
+								DoublePoint point2 = entry2.getKey();
 								String name2 = entry2.getValue();
 								if(name2.equals(sideBar.getSelectedBlockName())){
 									String newName = name2.substring(8);

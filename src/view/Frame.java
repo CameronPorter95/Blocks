@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 public class Frame extends JFrame implements ComponentListener{
 	
 	SideBar sideBar;
+	int currentWidth = this.getWidth();
+	int currentHeight = this.getHeight();
 	
 	public Frame(){
 		this.setMinimumSize(new Dimension(800, 600));
@@ -56,10 +58,11 @@ public class Frame extends JFrame implements ComponentListener{
 			sideBar.scaleImages();
 			sideBar.getDrawnImages().clear();
 			sideBar.setYPos(10);
-			sideBar.getScaledUIElements().clear();
-			sideBar.setUIElementValues();
+			sideBar.scaleUIElementValues(currentWidth, currentHeight, this.getWidth(), this.getHeight());
 			sideBar.addToDrawnImages();
 		}
+		currentWidth = this.getWidth();
+		currentHeight = this.getHeight();
 	}
 
 	@Override
